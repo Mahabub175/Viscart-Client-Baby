@@ -1,7 +1,7 @@
 "use client";
 
 import { MenuOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Button, Drawer, Popover } from "antd";
+import { Avatar, Button, Drawer, Popover, Tooltip } from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import LandingTopHeader from "./LandingTopHeader";
@@ -125,6 +125,7 @@ const LandingHeader = () => {
             <Link href={"/"}>
               <Image
                 src={globalData?.results?.logo}
+                priority
                 alt="logo"
                 width={80}
                 height={50}
@@ -155,7 +156,15 @@ const LandingHeader = () => {
                           icon={<UserOutlined />}
                         />
                       )}
-                      <h2 className="font-semibold">{data?.name ?? "User"}</h2>
+                      <Tooltip placement="top" title={data?.name || "User"}>
+                        <h2 className="font-semibold">
+                          {data?.name
+                            ? data.name.length > 6
+                              ? data.name.slice(0, 6).concat("...")
+                              : data.name
+                            : "User"}
+                        </h2>
+                      </Tooltip>
                       <IoMdArrowDropdown />
                     </Popover>
                   </div>

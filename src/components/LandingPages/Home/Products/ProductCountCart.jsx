@@ -1,6 +1,7 @@
 "use client";
 
 import { SubmitButton } from "@/components/Reusable/Button/CustomButton";
+import AttributeOptionSelector from "@/components/Shared/Product/AttributeOptionSelector";
 import { useCurrentUser } from "@/redux/services/auth/authSlice";
 import { useAddCartMutation } from "@/redux/services/cart/cartApi";
 import { useDeviceId } from "@/redux/services/device/deviceSlice";
@@ -223,48 +224,12 @@ const ProductCountCart = ({
         centered
       >
         <div className="flex flex-col gap-4 p-5">
-          {groupedAttributes &&
-            Object.entries(groupedAttributes).map(
-              ([attributeName, options]) => (
-                <div key={attributeName} className="flex flex-col gap-2">
-                  <span className="font-bold">{attributeName}:</span>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {options.map((option) => (
-                      <div
-                        key={option._id}
-                        className={`cursor-pointer px-4 py-2 border-2 rounded-lg ${
-                          selectedAttributes[attributeName] === option.name
-                            ? "border-primary bg-primary-light text-primary font-bold"
-                            : "border-gray-300"
-                        }`}
-                        style={
-                          attributeName === "Color"
-                            ? {
-                                backgroundColor: option.label,
-                                width: "32px",
-                                height: "32px",
-                                borderRadius: "50%",
-                                border:
-                                  selectedAttributes[attributeName] ===
-                                  option.name
-                                    ? "2px solid #000"
-                                    : "1px solid #ccc",
-                              }
-                            : {}
-                        }
-                        onClick={() =>
-                          handleAttributeSelect(attributeName, option.name)
-                        }
-                      >
-                        {attributeName.toLowerCase() !== "color" && (
-                          <span>{option.label}</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )
-            )}
+          <AttributeOptionSelector
+            groupedAttributes={groupedAttributes}
+            selectedAttributes={selectedAttributes}
+            handleAttributeSelect={handleAttributeSelect}
+            item={item}
+          />
 
           <div className="flex items-center gap-4 text-textColor font-bold my-2">
             Price:{" "}
