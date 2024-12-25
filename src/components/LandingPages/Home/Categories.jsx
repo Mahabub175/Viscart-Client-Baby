@@ -46,11 +46,11 @@ const Categories = () => {
         <Tabs
           defaultActiveKey="all-products"
           size="large"
-          className="font-semibold max-w-[350px] lg:max-w-[600px]"
+          className="font-semibold"
           onChange={(key) => setActiveCategory(key)}
         >
           <Tabs.TabPane tab="All" key="all-products" />
-          {activeCategories?.map((category) => (
+          {activeCategories?.slice(0, 3)?.map((category) => (
             <Tabs.TabPane tab={category?.name} key={category?._id} />
           ))}
         </Tabs>
