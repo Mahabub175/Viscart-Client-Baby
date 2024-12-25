@@ -52,7 +52,7 @@ const ProductTab = () => {
         <Tabs
           activeKey={activeTab}
           size="large"
-          className="font-semibold max-w-[350px] lg:max-w-[600px]"
+          className="font-semibold max-w-[350px] md:max-w-full"
           onChange={(key) => setActiveTab(key)}
         >
           {tabs?.map((item) => (
