@@ -46,7 +46,7 @@ const Categories = () => {
         <Tabs
           defaultActiveKey="all-products"
           size="large"
-          className="font-semibold"
+          className="font-semibold max-w-[350px] md:max-w-full"
           onChange={(key) => setActiveCategory(key)}
         >
           <Tabs.TabPane tab="All" key="all-products" />
