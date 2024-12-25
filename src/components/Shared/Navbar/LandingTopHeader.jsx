@@ -263,7 +263,7 @@ const LandingTopHeader = () => {
             </Link>
             <Link
               href={"/sign-up"}
-              className="flex items-center gap-2 text-black "
+              className="lg:flex items-center gap-2 text-black hidden"
             >
               <Button type="primary" className="!px-6 !py-4 !font-bold">
                 Sign Up
