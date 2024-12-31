@@ -12,12 +12,12 @@ const AllOffers = () => {
 
   return (
     <section>
-      <div className="lg:my-10 py-5 lg:py-10 relative container px-2 lg:px-5 mx-auto bg-white shadow-xl rounded-xl">
+      <div className="lg:my-10 py-5 lg:py-10 relative container px-5 mx-auto bg-white shadow-xl rounded-xl">
         {filteredProducts?.length ? (
           <>
-            <div className="capitalize text-center text-2xl lg:text-3xl text-primary font-semibold">
-              {"Offer Products"}
-            </div>
+            <h2 className="text-xl md:text-3xl font-medium text-center mb-10">
+              Offer Products
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-5 lg:gap-10 mt-10">
               {filteredProducts?.map((product) => (
                 <ProductCard key={product?._id} item={product} />

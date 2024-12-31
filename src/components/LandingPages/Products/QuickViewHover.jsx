@@ -6,11 +6,10 @@ import { useAddCompareMutation } from "@/redux/services/compare/compareApi";
 import { useDeviceId } from "@/redux/services/device/deviceSlice";
 import { useAddWishlistMutation } from "@/redux/services/wishlist/wishlistApi";
 import { Tooltip } from "antd";
-import Link from "next/link";
 import { useState } from "react";
 import { AiOutlineFullscreen } from "react-icons/ai";
 import { FaCodeCompare } from "react-icons/fa6";
-import { TbHeart, TbListDetails } from "react-icons/tb";
+import { TbHeart } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
@@ -84,15 +83,6 @@ const QuickViewHover = ({ item }) => {
         >
           <AiOutlineFullscreen />
         </div>
-      </Tooltip>
-
-      <Tooltip placement="top" title={"Details"}>
-        <Link
-          href={`/products/${item?.slug}`}
-          className="text-sm lg:text-xl cursor-pointer hover:scale-110 duration-300 text-white bg-primary rounded-full p-2"
-        >
-          <TbListDetails />
-        </Link>
       </Tooltip>
 
       <Tooltip placement="top" title={"Add to Wishlist"}>

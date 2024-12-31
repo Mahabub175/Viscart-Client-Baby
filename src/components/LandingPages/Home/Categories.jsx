@@ -40,7 +40,7 @@ const Categories = () => {
   return (
     <section className="container mx-auto px-2 lg:px-5">
       <div className="flex flex-col lg:flex-row items-center justify-between border-b">
-        <h2 className="text-2xl lg:text-3xl font-semibold text-center mb-5">
+        <h2 className="text-xl lg:text-3xl font-medium   text-center mb-5">
           Top Categories
         </h2>
         <Tabs

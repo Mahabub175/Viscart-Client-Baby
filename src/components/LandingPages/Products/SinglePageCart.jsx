@@ -85,7 +85,7 @@ const SinglePageCart = ({ params }) => {
 
   const currentPrice = currentVariant
     ? currentVariant?.sellingPrice
-    : singleProduct?.sellingPrice;
+    : singleProduct?.offerPrice ?? singleProduct?.sellingPrice;
 
   const currentImage = selectedImage
     ? selectedImage
@@ -95,19 +95,27 @@ const SinglePageCart = ({ params }) => {
 
   const allMedia =
     variantMedia.length > 0
-      ? [...variantMedia, singleProduct?.video ? "video-thumbnail" : null]
+      ? [
+          ...variantMedia,
+          singleProduct?.video ? "video-thumbnail" : null,
+        ].filter(Boolean)
       : [
-          formatImagePath(singleProduct?.mainImage) || null,
+          singleProduct?.mainImage
+            ? formatImagePath(singleProduct.mainImage)
+            : null,
           ...(Array.isArray(singleProduct?.images)
-            ? singleProduct?.images.map((image) => formatImagePath(image))
+            ? singleProduct.images.map((image) =>
+                image ? formatImagePath(image) : null
+              )
             : []),
           ...(Array.isArray(singleProduct?.variants)
-            ? singleProduct?.variants
-                ?.filter((variant) => variant.images)
-                ?.map((variant) =>
-                  variant.images.map((image) => formatImagePath(image))
-                )
-                .flat()
+            ? singleProduct.variants.flatMap((variant) =>
+                Array.isArray(variant.images)
+                  ? variant.images.map((image) =>
+                      image ? formatImagePath(image) : null
+                    )
+                  : []
+              )
             : []),
           singleProduct?.video ? "video-thumbnail" : null,
         ].filter(Boolean);
@@ -140,8 +148,8 @@ const SinglePageCart = ({ params }) => {
     <section className="container mx-auto px-2 lg:px-5 lg:py-10">
       <div className="border-2 border-primary rounded-xl p-5 mb-10 shadow-xl">
         <div className="flex flex-col lg:flex-row items-center justify-center gap-10 mb-10">
-          <div className="relative mx-auto flex flex-col lg:flex-row-reverse items-center lg:gap-10">
-            <div className="relative mx-auto">
+          <div className="relative mx-auto flex flex-col lg:flex-row-reverse items-center lg:gap-5">
+            <div className="relative mx-auto lg:w-[300px] xl:w-full">
               {isVideoPlaying && singleProduct?.video ? (
                 <video
                   src={formatImagePath(singleProduct?.video)}
@@ -166,7 +174,7 @@ const SinglePageCart = ({ params }) => {
               )}
             </div>
 
-            <div className="flex flex-row lg:flex-col justify-start gap-2 mt-5 max-h-[400px] border rounded-xl p-4 overflow-y-auto thumbnail">
+            <div className="flex flex-row lg:flex-col justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto xl:w-[147px] border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
               {allMedia?.map((media, index) => (
                 <div
                   key={index}
@@ -183,33 +191,37 @@ const SinglePageCart = ({ params }) => {
                       <FaPlay className="text-white text-2xl" />
                     </div>
                   ) : (
-                    <Image
-                      src={media}
-                      alt={`media ${index}`}
-                      height={80}
-                      width={80}
-                      className="object-cover rounded-xl"
-                    />
+                    <>
+                      <div className="flex items-center justify-center bg-black rounded-xl w-20 h-20">
+                        <Image
+                          src={media}
+                          alt={`media ${index}`}
+                          height={80}
+                          width={80}
+                          className="object-cover rounded-xl"
+                        />
+                      </div>
+                    </>
                   )}
                 </div>
               ))}
             </div>
           </div>
-          <div className="lg:w-1/2 flex flex-col gap-3">
-            <h2 className="text-3xl lg:text-4xl font-bold">
+          <div className="lg:w-1/2 flex flex-col">
+            <h2 className="text-xl md:text-3xl font-medium mb-2">
               {singleProduct?.name}
             </h2>
-            <div className="flex items-center gap-2">
-              <span className="font-bold">Category:</span>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="font-medium">Category:</span>
               <span>{singleProduct?.category?.name}</span>
             </div>
             {singleProduct?.brand && (
               <div className="flex items-center gap-2">
-                <span className="font-bold">Brand:</span>
+                <span className="font-medium">Brand:</span>
                 <span>{singleProduct?.brand?.name}</span>
               </div>
             )}
-            <div className="flex items-center mt-4 gap-4 font-bold">
+            <div className="flex items-center mt-4 gap-4 font-medium">
               <Rate
                 disabled
                 value={singleProduct?.ratings?.average}
@@ -217,7 +229,7 @@ const SinglePageCart = ({ params }) => {
               />
               ({singleProduct?.ratings?.count})
             </div>
-            <div className="flex items-center gap-4 text-textColor font-bold my-2">
+            <div className="flex items-center gap-4 text-textColor font-medium my-2">
               Price:{" "}
               {singleProduct?.offerPrice ? (
                 <p className="text-primary text-xl">
@@ -232,7 +244,9 @@ const SinglePageCart = ({ params }) => {
               )}
               {singleProduct?.offerPrice && (
                 <p className="text-base line-through text-red-500">
-                  {globalData?.results?.currency + " " + currentPrice}
+                  {globalData?.results?.currency +
+                    " " +
+                    singleProduct?.sellingPrice}
                 </p>
               )}
             </div>
@@ -290,8 +304,8 @@ const SinglePageCart = ({ params }) => {
           />
         </div>
       </div>
-      <div className="border-2 border-primary rounded-xl p-5 mb-10 shadow-xl bg-white flex flex-col items-center justify-center">
-        <div className="bg-primary mb-10 px-10 py-2 text-white font-bold rounded-xl inline-block">
+      <div className="border-2 border-primary rounded-xl p-5 mb-10 shadow-xl bg-white flex flex-col items-start justify-start">
+        <div className="bg-primary mb-10 px-10 py-2 text-white font-medium rounded-lg">
           Description
         </div>
         <div

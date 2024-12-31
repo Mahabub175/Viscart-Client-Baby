@@ -96,10 +96,10 @@ const GlobalCart = () => {
         ></div>
       )}
 
-      <div className="fixed bottom-[30%] right-5 z-50">
+      <div className="fixed bottom-[14%] lg:bottom-[17%] right-1 z-50">
         <div
           onClick={toggleCart}
-          className="bg-primary text-white rounded-full w-14 lg:w-16 h-14 lg:h-16 flex items-center justify-center text-2xl cursor-pointer animate-pulse"
+          className="bg-primary text-white rounded-full w-14 h-14 flex items-center justify-center text-xl cursor-pointer"
         >
           {cartData?.length > 0 && !isError ? (
             <span className="relative">
@@ -114,7 +114,7 @@ const GlobalCart = () => {
         </div>
 
         {isCartOpen && (
-          <div className="absolute bottom-16 lg:-bottom-40 right-0 lg:right-20 w-[370px] p-4 bg-white shadow-lg rounded-lg text-black z-50">
+          <div className="absolute bottom-16 lg:-bottom-0 right-0 lg:right-20 w-[370px] p-4 bg-white shadow-lg rounded-lg text-black z-50">
             <div className="flex justify-between mb-5">
               <h3 className="font-bold text-lg">Cart Details</h3>
               <button
@@ -145,9 +145,9 @@ const GlobalCart = () => {
                         <div className="flex-1">
                           <Link href={`/products/${item?.slug}`}>
                             <Tooltip title={item.productName}>
-                              <h2 className="text-sm font-semibold">
-                                {item.productName.length > 40
-                                  ? `${item.productName.slice(0, 40)}...`
+                              <h2 className="text-sm font-medium">
+                                {item.productName.length > 35
+                                  ? `${item.productName.slice(0, 35)}...`
                                   : item.productName}{" "}
                                 {item?.variant &&
                                   ` (${item?.variant?.attributeCombination
@@ -190,7 +190,7 @@ const GlobalCart = () => {
                             </div>
                           </div>
                         </div>
-                        <p className="text-primary flex flex-1 text-base font-bold">
+                        <p className="text-primary flex text-base font-bold">
                           {globalData?.results?.currency +
                             " " +
                             item.price * item.localQuantity}
@@ -206,7 +206,7 @@ const GlobalCart = () => {
                       </div>
                     ))}
                     <hr className="border-primary mt-4" />
-                    <div className="text-center ml-10 font-bold text-primary mt-2">
+                    <div className="text-end ml-10 font-bold text-primary mt-2 mr-5">
                       Subtotal: {globalData?.results?.currency + " " + subTotal}
                     </div>
                   </div>

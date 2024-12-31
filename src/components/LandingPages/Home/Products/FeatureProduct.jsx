@@ -39,16 +39,10 @@ const FeatureProduct = () => {
 
   return (
     <section className="pt-10 my-container">
-      <div
-        className={`grid grid-cols-1 md:grid-cols-1 ${
-          topCategories?.length
-            ? `lg:grid-cols-${topCategories?.length}`
-            : "lg:grid-cols-1"
-        } gap-8`}
-      >
+      <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8`}>
         {topCategories?.map((category) => (
           <div key={category.name} className="mb-10 relative">
-            <h2 className="text-2xl font-bold mb-6 border-b pb-4">
+            <h2 className="text-2xl font-medium mb-6 border-b pb-4">
               {category.name}
             </h2>
 
@@ -93,20 +87,22 @@ const FeatureProduct = () => {
                         {slideProducts?.map((item) => (
                           <div
                             key={item._id}
-                            className="flex items-center gap-5 rounded-xl bg-white shadow-xl p-3 lg:h-[150px]"
+                            className="flex items-center gap-5 rounded-xl bg-white shadow-xl p-3 lg:h-[150px] group border border-transparent hover:border-primary duration-300"
                           >
-                            <Image
-                              src={formatImagePath(item?.mainImage)}
-                              alt={item?.name}
-                              height={100}
-                              width={100}
-                              className="rounded-xl"
-                            />
+                            <div className="w-[100px] h-[100px] rounded-xl overflow-hidden">
+                              <Image
+                                src={formatImagePath(item?.mainImage)}
+                                alt={item?.name}
+                                height={100}
+                                width={100}
+                                className="rounded-xl group-hover:scale-110 duration-300"
+                              />
+                            </div>
                             <LinkButton href={`/products/${item?.slug}`}>
                               <Tooltip placement="top" title={item?.name}>
-                                <h2 className="text-start lg:font-semibold mt-2 mb-6">
-                                  {item?.name.length > 40
-                                    ? item.name.slice(0, 40).concat("...")
+                                <h2 className="text-start font-medium mt-2 mb-2">
+                                  {item?.name.length > 35
+                                    ? item.name.slice(0, 35).concat("...")
                                     : item.name}
                                 </h2>
                               </Tooltip>
@@ -121,20 +117,20 @@ const FeatureProduct = () => {
 
                               <div className="flex items-center gap-4 justify-start">
                                 {item?.offerPrice && (
-                                  <p className="text-sm lg:text-base font-bold line-through text-red-500">
+                                  <p className="text-sm lg:text-base font-medium line-through text-red-500">
                                     {globalData?.results?.currency +
                                       " " +
                                       item?.sellingPrice}
                                   </p>
                                 )}
                                 {item?.offerPrice ? (
-                                  <p className="text-primary text-sm  lg:text-2xl font-bold">
+                                  <p className="text-primary text-sm lg:text-xl font-medium">
                                     {globalData?.results?.currency +
                                       " " +
                                       item?.offerPrice}
                                   </p>
                                 ) : (
-                                  <p className="text-primary text-sm  lg:text-2xl font-bold">
+                                  <p className="text-primary text-sm lg:text-xl font-medium">
                                     {globalData?.results?.currency +
                                       " " +
                                       item?.sellingPrice}

@@ -26,10 +26,12 @@ const LandingTopHeader = () => {
   const user = useSelector(useCurrentUser);
   const deviceId = useSelector(useDeviceId);
   const { data } = useGetSingleUserQuery(user?._id);
-  const { data: compareData, isError: isCompareError } =
-    useGetSingleCompareByUserQuery(user?._id ?? deviceId);
-  const { data: wishListData, isError: isWishlistError } =
-    useGetSingleWishlistByUserQuery(user?._id ?? deviceId);
+  const { data: compareData } = useGetSingleCompareByUserQuery(
+    user?._id ?? deviceId
+  );
+  const { data: wishListData } = useGetSingleWishlistByUserQuery(
+    user?._id ?? deviceId
+  );
   const { data: cartData, isError: isCartError } = useGetSingleCartByUserQuery(
     user?._id ?? deviceId
   );
@@ -103,7 +105,7 @@ const LandingTopHeader = () => {
               <Link
                 key={index}
                 href={links[item]}
-                className={`gap-2 font-bold duration-300 ${
+                className={`gap-2 font-medium duration-300 ${
                   pathname === links[item]
                     ? "text-primary hover:text-primary"
                     : "text-black hover:text-primary"
@@ -119,7 +121,7 @@ const LandingTopHeader = () => {
       <div className="flex w-full justify-end pt-3">
         <Button
           onClick={handleLogout}
-          className={`w-full font-bold`}
+          className={`w-full font-medium`}
           size="large"
           type="primary"
         >
@@ -130,16 +132,16 @@ const LandingTopHeader = () => {
   );
 
   const routes = (
-    <div className="flex flex-col md:flex-row md:items-center gap-10">
+    <div className="flex flex-col md:flex-row md:items-center gap-5 lg:gap-10">
       <Link
         href={"/compare"}
-        className={`flex flex-col items-center font-bold duration-300 ${
+        className={`flex flex-col items-center font-medium duration-300 ${
           pathname == "/compare"
             ? "text-primary hover:text-primary"
             : "text-black hover:text-primary"
         }`}
       >
-        {compareData?.[0]?.product?.length > 0 && !isCompareError ? (
+        {compareData?.[0]?.product?.length > 0 && !compareData ? (
           <span className="relative">
             <span className="absolute -top-2 -right-2 bg-primary text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
               {compareData?.[0]?.product?.length}
@@ -153,13 +155,13 @@ const LandingTopHeader = () => {
       </Link>
       <Link
         href={"/wishlist"}
-        className={`flex flex-col items-center font-bold duration-300 ${
+        className={`flex flex-col items-center font-medium duration-300 ${
           pathname == "/wishlist"
             ? "text-primary hover:text-primary"
             : "text-black hover:text-primary"
         }`}
       >
-        {wishListData?.length > 0 && !isWishlistError ? (
+        {wishListData?.length > 0 && !wishListData ? (
           <span className="relative">
             <span className="absolute -top-2 -right-2 bg-primary text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
               {wishListData?.length}
@@ -173,7 +175,7 @@ const LandingTopHeader = () => {
       </Link>
       <Link
         href={"/cart"}
-        className={`flex flex-col items-center font-bold duration-300 ${
+        className={`flex flex-col items-center font-medium duration-300 ${
           pathname == "/cart"
             ? "text-primary hover:text-primary"
             : "text-black hover:text-primary"
@@ -195,30 +197,31 @@ const LandingTopHeader = () => {
   );
 
   return (
-    <div className="md:flex items-center justify-between container mx-auto px-5">
+    <div className="md:flex items-center justify-between container mx-auto gap-5 px-5 py-0 -my-3">
       <div className="flex flex-col md:flex-row items-center gap-10">
         <Link href={"/"}>
           <Image
             src={globalData?.results?.logo ?? logo}
             alt="logo"
-            width={80}
-            height={50}
+            width={100}
+            height={100}
+            className="w-full h-[100px]"
           />
         </Link>
-        <div className="hidden lg:block relative">
-          <AutoComplete
-            options={options}
-            onSearch={handleSearch}
-            placeholder="Search for Products..."
-            size="large"
-            className="!w-[30vw]"
-          />
-          <FaSearch className="absolute right-2 top-1/2 -translate-y-1/2 text-primary text-xl" />
-        </div>
+      </div>
+      <div className="hidden md:flex flex-1 relative">
+        <AutoComplete
+          options={options}
+          onSearch={handleSearch}
+          placeholder="Search for Products..."
+          size="large"
+          className="w-full"
+        />
+        <FaSearch className="absolute right-2 top-1/2 -translate-y-1/2 text-primary text-xl" />
       </div>
       {routes}
       <div className="mt-10 md:mt-0 md:flex items-center gap-4 ">
-        {user?._id ? (
+        {user?._id && (
           <>
             {" "}
             <div className="flex items-center gap-2">
@@ -250,25 +253,6 @@ const LandingTopHeader = () => {
                 <IoMdArrowDropdown />
               </Popover>
             </div>
-          </>
-        ) : (
-          <>
-            <Link
-              href={"/sign-in"}
-              className="flex items-center gap-2 text-primary"
-            >
-              <Button type="default" className="!px-6 !py-4 !font-bold">
-                Sign In
-              </Button>
-            </Link>
-            <Link
-              href={"/sign-up"}
-              className="lg:flex items-center gap-2 text-black hidden"
-            >
-              <Button type="primary" className="!px-6 !py-4 !font-bold">
-                Sign Up
-              </Button>
-            </Link>
           </>
         )}
       </div>

@@ -14,20 +14,10 @@ const ProductCard = ({ item }) => {
 
   return (
     <div
-      className="border hover:border-primary duration-300 rounded-xl shadow-xl relative group w-[170px] h-[310px] lg:w-[230px] lg:h-[400px] mx-auto bg-white"
+      className="border hover:border-primary duration-300 rounded-xl shadow-xl relative group w-[170px] h-[320px] lg:w-[230px] lg:h-[400px] mx-auto bg-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {item?.stock > 0 ? (
-        <div className="absolute top-2 right-2 p-2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded font-bold text-xs z-10">
-          In Stock
-        </div>
-      ) : (
-        <div className="absolute top-2 right-2 p-2 bg-gradient-to-r from-red-500 to-red-700 text-white rounded font-bold text-xs z-10">
-          Out Of Stock
-        </div>
-      )}
-
       <div className="relative overflow-hidden rounded-t-xl">
         {item?.video && isHovered ? (
           <video
@@ -65,11 +55,17 @@ const ProductCard = ({ item }) => {
       </div>
 
       <div className="bg-white px-3 lg:p-5 rounded-b-xl">
+        <div className="text-xs text-black/50">{item?.category?.name}</div>
         <LinkButton href={`/products/${item?.slug}`}>
           <Tooltip placement="top" title={item?.name}>
-            <h2 className="text-base text-start lg:font-semibold lg:mt-2 mb-6">
-              {item?.name.length > 40
-                ? item.name.slice(0, 40).concat("...")
+            <h2 className="text-sm lg:text-base text-start font-medium mt-2 mb-2 hidden md:block">
+              {item?.name.length > 35
+                ? item.name.slice(0, 35).concat("...")
+                : item.name}
+            </h2>
+            <h2 className="text-sm lg:text-base text-start font-medium mt-2 mb-2 md:hidden">
+              {item?.name.length > 30
+                ? item.name.slice(0, 30).concat("...")
                 : item.name}
             </h2>
           </Tooltip>
@@ -78,18 +74,18 @@ const ProductCard = ({ item }) => {
             <Rate disabled value={item?.ratings?.average} allowHalf />
           </div>
 
-          <div className="flex items-center gap-2 lg:gap-4 justify-start absolute bottom-5">
+          <div className="flex items-center gap-2 lg:gap-4 justify-start absolute bottom-4">
             {item?.offerPrice && (
-              <p className="text-sm lg:text-base font-bold line-through text-red-500">
+              <p className="text-sm lg:text-base font-medium line-through text-red-500">
                 {globalData?.results?.currency + " " + item?.sellingPrice}
               </p>
             )}
             {item?.offerPrice ? (
-              <p className="text-primary text-sm lg:text-xl font-bold">
+              <p className="text-primary text-sm lg:text-xl font-medium">
                 {globalData?.results?.currency + " " + item?.offerPrice}
               </p>
             ) : (
-              <p className="text-primary text-sm lg:text-xl font-bold">
+              <p className="text-primary text-sm lg:text-xl font-medium">
                 {globalData?.results?.currency + " " + item?.sellingPrice}
               </p>
             )}

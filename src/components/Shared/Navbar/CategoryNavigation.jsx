@@ -84,7 +84,7 @@ const CategoryNavigation = ({ onClose }) => {
           key={index}
           href={item.link}
           onClick={onClose}
-          className={`flex flex-col lg:items-center font-bold duration-300 ${
+          className={`flex flex-col lg:items-center font-medium duration-300 ${
             pathname === item.link
               ? "text-primary hover:text-primary"
               : "text-black hover:text-primary"
@@ -128,7 +128,7 @@ const CategoryNavigation = ({ onClose }) => {
         >
           <div
             onClick={handleDropdownToggle}
-            className="bg-primary py-4 px-8 font-bold flex items-center gap-2 text-white rounded cursor-pointer"
+            className="bg-primary py-4 px-8 font-medium flex items-center gap-2 text-white rounded cursor-pointer"
           >
             <GiHamburgerMenu />
             Categories

@@ -20,8 +20,8 @@ const Brands = () => {
 
   return (
     <section className="my-container p-5 rounded-xl mt-20 relative">
-      <h2 className="text-2xl lg:text-4xl font-bold text-start mb-10 border-b pb-4">
-        Our Brands
+      <h2 className="text-xl lg:text-3xl font-medium text-start mb-10 border-b pb-4">
+        Popular Brands
       </h2>
       <div>
         <Swiper
@@ -54,8 +54,8 @@ const Brands = () => {
                     }
                     alt={item?.name ?? "demo"}
                     width={240}
-                    height={120}
-                    className="border-2 border-transparent hover:border-primary duration-500 w-[240px] h-[120px] rounded-xl mx-auto"
+                    height={240}
+                    className="border-2 border-transparent hover:border-primary duration-500 w-[200px] h-[200px] rounded-xl mx-auto"
                   />
                 </LinkButton>
               </SwiperSlide>

@@ -105,12 +105,23 @@ const LandingHeader = () => {
 
   const top = (
     <div className="bg-primary">
-      <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between px-5 py-2 text-white font-bold">
+      <div className="my-container mx-auto flex items-center justify-between px-5 py-2 text-white font-bold">
         <Link href={"/track-order"} className="flex items-center gap-2">
           <FaLocationDot />
           Track Order
         </Link>
-        <div></div>
+        <div className="hidden md:block">
+          {!user && (
+            <Link
+              href={"/sign-in"}
+              className="flex items-center gap-2 text-primary"
+            >
+              <Button type="default" className="!px-6 !py-4 !font-bold">
+                Sign In
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -160,11 +171,11 @@ const LandingHeader = () => {
 
   return (
     <header>
-      <nav className="mb-5">
+      <nav className="lg:mb-5">
         {isMobile ? (
           <>
             {top}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between -my-3">
               <div className="flex items-center">
                 <Button
                   type="primary"
@@ -178,8 +189,8 @@ const LandingHeader = () => {
                   src={globalData?.results?.logo}
                   priority
                   alt="logo"
-                  width={50}
-                  height={50}
+                  width={80}
+                  height={80}
                 />
               </Link>
               <div className="md:flex items-center gap-4 ">
@@ -239,13 +250,13 @@ const LandingHeader = () => {
                 onClose={onClose}
                 open={drawerVisible}
               >
-                <div className="flex items-center justify-between gap-4 mb-10">
+                <div className="flex items-center justify-between gap-4 mb-5 -mt-5">
                   <Link href={"/"}>
                     <Image
                       src={globalData?.results?.logo}
                       alt="logo"
-                      width={50}
-                      height={50}
+                      width={80}
+                      height={80}
                     />
                   </Link>
                   <button

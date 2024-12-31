@@ -74,22 +74,19 @@ const SingleProductDetails = ({ params }) => {
       setCurrentVariant(null);
       setVariantMedia([]);
     } else {
-      const updatedVariant = singleProduct?.variants.find((variant) =>
-        Object.entries(selectedAttributes).every(
-          ([attrName, selectedValue]) => {
-            return variant.attributeCombination.some(
-              (attr) =>
-                attr.attribute.name === attrName && attr.name === selectedValue
-            );
-          }
+      const updatedVariant = singleProduct?.variants?.find((variant) =>
+        Object.entries(selectedAttributes).every(([attrName, selectedValue]) =>
+          variant.attributeCombination.some(
+            (attr) =>
+              attr.attribute.name === attrName && attr.name === selectedValue
+          )
         )
       );
       setCurrentVariant(updatedVariant);
 
-      if (updatedVariant?.images) {
-        setVariantMedia(
-          updatedVariant.images.map((image) => formatImagePath(image))
-        );
+      if (updatedVariant?.images && Array.isArray(updatedVariant.images)) {
+        const validImages = updatedVariant.images.filter(Boolean);
+        setVariantMedia(validImages.map((image) => formatImagePath(image)));
       } else {
         setVariantMedia([]);
       }
@@ -98,7 +95,7 @@ const SingleProductDetails = ({ params }) => {
 
   const currentPrice = currentVariant
     ? currentVariant?.sellingPrice
-    : singleProduct?.sellingPrice;
+    : singleProduct?.offerPrice ?? singleProduct?.sellingPrice;
 
   const currentImage = selectedImage
     ? selectedImage
@@ -108,19 +105,27 @@ const SingleProductDetails = ({ params }) => {
 
   const allMedia =
     variantMedia.length > 0
-      ? [...variantMedia, singleProduct?.video ? "video-thumbnail" : null]
+      ? [
+          ...variantMedia,
+          singleProduct?.video ? "video-thumbnail" : null,
+        ].filter(Boolean)
       : [
-          formatImagePath(singleProduct?.mainImage) || null,
+          singleProduct?.mainImage
+            ? formatImagePath(singleProduct.mainImage)
+            : null,
           ...(Array.isArray(singleProduct?.images)
-            ? singleProduct?.images.map((image) => formatImagePath(image))
+            ? singleProduct.images.map((image) =>
+                image ? formatImagePath(image) : null
+              )
             : []),
           ...(Array.isArray(singleProduct?.variants)
-            ? singleProduct?.variants
-                ?.filter((variant) => variant.images)
-                ?.map((variant) =>
-                  variant.images.map((image) => formatImagePath(image))
-                )
-                .flat()
+            ? singleProduct.variants.flatMap((variant) =>
+                Array.isArray(variant.images)
+                  ? variant.images.map((image) =>
+                      image ? formatImagePath(image) : null
+                    )
+                  : []
+              )
             : []),
           singleProduct?.video ? "video-thumbnail" : null,
         ].filter(Boolean);
@@ -137,10 +142,10 @@ const SingleProductDetails = ({ params }) => {
   };
 
   return (
-    <section className="container mx-auto px-2 lg:px-5 lg:py-10">
+    <section className="container mx-auto px-2 py-5 lg:py-10">
       <div className="border-2 border-primary rounded-xl p-5 flex flex-col lg:flex-row items-center justify-center gap-10 mb-10 shadow-xl">
-        <div className="relative mx-auto flex flex-col lg:flex-row-reverse items-center lg:gap-10">
-          <div className="relative mx-auto">
+        <div className="relative mx-auto flex flex-col lg:flex-row-reverse items-center lg:gap-5">
+          <div className="relative mx-auto lg:w-[280px] xl:w-full">
             {isVideoPlaying && singleProduct?.video ? (
               <video
                 src={formatImagePath(singleProduct?.video)}
@@ -155,8 +160,8 @@ const SingleProductDetails = ({ params }) => {
                 <Image
                   src={currentImage}
                   alt="product image"
-                  height={400}
-                  width={400}
+                  height={450}
+                  width={450}
                   className="mx-auto rounded-xl"
                 />
               </Zoom>
@@ -165,7 +170,7 @@ const SingleProductDetails = ({ params }) => {
             )}
           </div>
 
-          <div className="flex flex-row lg:flex-col justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
+          <div className="flex flex-row lg:flex-col justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto xl:w-[147px] border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
             {allMedia?.map((media, index) => (
               <div
                 key={index}
@@ -178,12 +183,12 @@ const SingleProductDetails = ({ params }) => {
                 }`}
               >
                 {media === "video-thumbnail" ? (
-                  <div className="flex items-center justify-center bg-black rounded-xl w-20 h-20">
+                  <div className="flex items-center justify-center rounded-xl w-20 h-20">
                     <FaPlay className="text-white text-2xl" />
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center justify-center bg-black rounded-xl w-20 h-20">
+                    <div className="flex items-center justify-center rounded-xl w-20 h-20">
                       <Image
                         src={media}
                         alt={`media ${index}`}
@@ -198,25 +203,25 @@ const SingleProductDetails = ({ params }) => {
             ))}
           </div>
         </div>
-        <div className="lg:w-1/2 flex flex-col gap-3 text-sm lg:text-lg">
-          <h2 className="text-2xl lg:text-4xl font-bold">
+        <div className="lg:w-1/2 flex flex-col text-sm lg:text-base">
+          <h2 className="text-xl md:text-3xl font-medium mb-2">
             {singleProduct?.name}
           </h2>
-          <div className="flex items-center gap-2">
-            <span className="font-bold">Category:</span>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-medium">Category:</span>
             <span>{singleProduct?.category?.name}</span>
           </div>
           {singleProduct?.brand && (
             <div className="flex items-center gap-2">
-              <span className="font-bold">Brand:</span>
+              <span className="font-medium">Brand:</span>
               <span>{singleProduct?.brand?.name}</span>
             </div>
           )}
-          <div className="flex items-center mt-4 gap-4 font-bold">
-            <Rate disabled value={singleProduct?.ratings?.average} allowHalf />({" "}
+          <div className="flex items-center mt-4 gap-4 font-medium">
+            <Rate disabled value={singleProduct?.ratings?.average} allowHalf />(
             {singleProduct?.ratings?.count})
           </div>
-          <div className="flex items-center gap-4 text-textColor font-bold my-2">
+          <div className="flex items-center gap-4 text-textColor font-medium my-2">
             Price:{" "}
             {singleProduct?.offerPrice ? (
               <p className="text-primary text-xl">
@@ -231,7 +236,9 @@ const SingleProductDetails = ({ params }) => {
             )}
             {singleProduct?.offerPrice && (
               <p className="text-base line-through text-red-500">
-                {globalData?.results?.currency + " " + currentPrice}
+                {globalData?.results?.currency +
+                  " " +
+                  singleProduct?.sellingPrice}
               </p>
             )}
           </div>
@@ -260,28 +267,26 @@ const SingleProductDetails = ({ params }) => {
           </div>
         </div>
       </div>
-      <div className="border-2 border-primary rounded-xl p-5 mb-10 shadow-xl bg-white flex flex-col items-center justify-center">
-        <div className="bg-primary mb-10 px-10 py-2 text-white font-bold rounded-xl inline-block">
+      <div className="border-2 border-primary rounded-xl p-5 mb-10 shadow-xl bg-white">
+        <div className="bg-primary mb-10 px-10 py-2 text-white font-medium rounded-lg inline-block">
           Description
         </div>
         <div
           dangerouslySetInnerHTML={{ __html: singleProduct?.description }}
         ></div>
       </div>
-      <div className="mt-20">
-        {activeProducts && activeProducts.length > 0 ? (
-          <>
-            <h2 className="text-xl lg:text-3xl font-bold mb-5 border-b pb-2 px-2">
-              Similar Products
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-5 lg:gap-5">
-              {activeProducts.map((product) => (
-                <ProductCard key={product._id} item={product} />
-              ))}
-            </div>
-          </>
-        ) : null}
-      </div>
+      {activeProducts && activeProducts.length > 0 ? (
+        <>
+          <h2 className="text-xl lg:text-3xl font-normal mb-5 border-b pb-2 px-2 mt-10 lg:mt-20">
+            Similar Products
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-5 lg:gap-5">
+            {activeProducts.map((product) => (
+              <ProductCard key={product._id} item={product} />
+            ))}
+          </div>
+        </>
+      ) : null}
     </section>
   );
 };
