@@ -322,6 +322,23 @@ const AllProducts = ({ searchParams }) => {
               <span>{globalData?.results?.currency + " " + priceRange[1]}</span>
             </div>
           </div>
+          <div className="mb-6 rounded-xl border p-5">
+            <label className="block mb-2 font-semibold">Availability</label>
+            <Radio.Group
+              value={availability}
+              onChange={handleAvailabilityChange}
+              className="flex flex-col gap-2"
+            >
+              <Radio value="inStock">
+                In Stock (
+                {filteredProducts?.filter?.((item) => item?.stock > 0).length})
+              </Radio>
+              <Radio value="outOfStock">
+                Out of Stock (
+                {filteredProducts?.filter?.((item) => item?.stock < 0).length})
+              </Radio>
+            </Radio.Group>
+          </div>
         </div>
       </Modal>
     </section>
