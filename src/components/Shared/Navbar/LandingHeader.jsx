@@ -105,7 +105,7 @@ const LandingHeader = () => {
 
   const top = (
     <div className="bg-primary">
-      <div className="my-container mx-auto flex items-center justify-between px-5 py-2 text-white font-bold">
+      <div className="xl:container mx-auto flex items-center justify-between px-5 py-2 text-white font-bold">
         <Link href={"/track-order"} className="flex items-center gap-2">
           <FaLocationDot />
           Track Order

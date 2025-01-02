@@ -14,7 +14,7 @@ const ProductCard = ({ item }) => {
 
   return (
     <div
-      className="border hover:border-primary duration-300 rounded-xl shadow-xl relative group w-[170px] h-[320px] lg:w-[230px] lg:h-[400px] mx-auto bg-white"
+      className="border hover:border-primary duration-300 rounded-xl shadow-xl relative group w-auto h-[320px] lg:w-[230px] lg:h-[400px] mx-auto bg-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -42,7 +42,7 @@ const ProductCard = ({ item }) => {
             alt={item?.name}
             width={230}
             height={220}
-            className="rounded-t-xl w-[185px] md:w-full h-[160px] lg:h-[220px] group-hover:scale-110 duration-500"
+            className="rounded-t-xl w-[250px] h-[160px] lg:h-[220px] group-hover:scale-110 duration-500"
           />
         )}
 
@@ -59,8 +59,8 @@ const ProductCard = ({ item }) => {
         <LinkButton href={`/products/${item?.slug}`}>
           <Tooltip placement="top" title={item?.name}>
             <h2 className="text-sm lg:text-base text-start font-medium mt-2 mb-2 hidden md:block">
-              {item?.name.length > 35
-                ? item.name.slice(0, 35).concat("...")
+              {item?.name.length > 33
+                ? item.name.slice(0, 33).concat("...")
                 : item.name}
             </h2>
             <h2 className="text-sm lg:text-base text-start font-medium mt-2 mb-2 md:hidden">
@@ -71,7 +71,12 @@ const ProductCard = ({ item }) => {
           </Tooltip>
 
           <div className="lg:flex items-center mb-2 gap-4 font-bold hidden">
-            <Rate disabled value={item?.ratings?.average} allowHalf />
+            <Rate
+              disabled
+              value={item?.ratings?.average}
+              allowHalf
+              className="text-sm"
+            />
           </div>
 
           <div className="flex items-center gap-2 lg:gap-4 justify-start absolute bottom-4">

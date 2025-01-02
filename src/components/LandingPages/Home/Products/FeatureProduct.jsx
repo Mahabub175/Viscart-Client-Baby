@@ -38,7 +38,7 @@ const FeatureProduct = () => {
     .slice(0, 3);
 
   return (
-    <section className="pt-10 my-container">
+    <section className="pt-10 my-container -mb-20">
       <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8`}>
         {topCategories?.map((category) => (
           <div key={category.name} className="mb-10 relative">
@@ -112,6 +112,7 @@ const FeatureProduct = () => {
                                   disabled
                                   value={item?.ratings?.average}
                                   allowHalf
+                                  className="text-sm lg:text-base"
                                 />
                               </div>
 

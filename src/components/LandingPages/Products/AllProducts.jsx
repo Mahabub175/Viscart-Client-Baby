@@ -3,7 +3,15 @@
 import { useGetAllBrandsQuery } from "@/redux/services/brand/brandApi";
 import { useGetAllCategoriesQuery } from "@/redux/services/category/categoryApi";
 import { useGetProductsQuery } from "@/redux/services/product/productApi";
-import { Pagination, Slider, Checkbox, Select, Button, Modal } from "antd";
+import {
+  Pagination,
+  Slider,
+  Checkbox,
+  Select,
+  Button,
+  Modal,
+  Radio,
+} from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { paginationNumbers } from "@/assets/data/paginationData";
 import { useGetAllGlobalSettingQuery } from "@/redux/services/globalSetting/globalSettingApi";
@@ -21,6 +29,7 @@ const AllProducts = ({ searchParams }) => {
   const [sorting, setSorting] = useState("");
   const [filterModal, setFilterModal] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
+  const [availability, setAvailability] = useState("");
 
   const { data: globalData } = useGetAllGlobalSettingQuery();
   const { data: brandData } = useGetAllBrandsQuery();
@@ -52,7 +61,14 @@ const AllProducts = ({ searchParams }) => {
   );
 
   useEffect(() => {
-    debouncedSetSearchFilter(searchParams);
+    if (searchParams) {
+      debouncedSetSearchFilter(searchParams);
+    } else {
+      setSelectedBrands([]);
+      setSelectedCategories([]);
+      setPriceRange([0, 10000]);
+      setSorting("");
+    }
     return () => debouncedSetSearchFilter.cancel();
   }, [searchParams, debouncedSetSearchFilter]);
 
@@ -83,7 +99,15 @@ const AllProducts = ({ searchParams }) => {
       const isPriceMatch =
         product.sellingPrice >= priceRange[0] &&
         product.sellingPrice <= priceRange[1];
-      return isBrandMatch && isCategoryMatch && isPriceMatch;
+      const isAvailabilityMatch =
+        availability === "inStock"
+          ? product.stock > 0
+          : availability === "outOfStock"
+          ? product.stock === 0
+          : true;
+      return (
+        isBrandMatch && isCategoryMatch && isPriceMatch && isAvailabilityMatch
+      );
     });
 
     if (sorting === "PriceLowToHigh") {
@@ -93,7 +117,14 @@ const AllProducts = ({ searchParams }) => {
       return filtered?.sort((a, b) => b.sellingPrice - a.sellingPrice);
     }
     return filtered;
-  }, [activeProducts, selectedBrands, selectedCategories, priceRange, sorting]);
+  }, [
+    activeProducts,
+    selectedBrands,
+    selectedCategories,
+    priceRange,
+    sorting,
+    availability,
+  ]);
 
   const handlePageChange = (page, size) => {
     setCurrentPage(page);
@@ -116,8 +147,12 @@ const AllProducts = ({ searchParams }) => {
     setSorting(value);
   };
 
+  const handleAvailabilityChange = (e) => {
+    setAvailability(e.target.value);
+  };
+
   return (
-    <section className="container mx-auto px-2 lg:px-5 py-10 relative -mt-10">
+    <section className="xl:container mx-auto px-2 lg:px-5 py-10 relative -mt-10">
       <div className="bg-gray-200 flex items-center gap-2 justify-between py-3 px-2 lg:px-6 mb-6 rounded-xl">
         <p className="text-xs md:text-base">
           <span className="font-semibold text-lg">
@@ -191,11 +226,28 @@ const AllProducts = ({ searchParams }) => {
               <span>{globalData?.results?.currency + " " + priceRange[1]}</span>
             </div>
           </div>
+          <div className="mb-6 rounded-xl border p-5">
+            <label className="block mb-2 font-semibold">Availability</label>
+            <Radio.Group
+              value={availability}
+              onChange={handleAvailabilityChange}
+              className="flex flex-col gap-2"
+            >
+              <Radio value="inStock">
+                In Stock (
+                {filteredProducts?.filter?.((item) => item?.stock > 0).length})
+              </Radio>
+              <Radio value="outOfStock">
+                Out of Stock (
+                {filteredProducts?.filter?.((item) => item?.stock < 0).length})
+              </Radio>
+            </Radio.Group>
+          </div>
         </div>
         <div className="w-full">
           <div>
             {filteredProducts?.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-x-2 gap-y-5 lg:gap-10">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap justify-start items-center gap-5">
                 {filteredProducts?.map((product) => (
                   <ProductCard key={product?._id} item={product} />
                 ))}

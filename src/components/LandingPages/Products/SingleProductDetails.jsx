@@ -142,7 +142,7 @@ const SingleProductDetails = ({ params }) => {
   };
 
   return (
-    <section className="container mx-auto px-2 py-5 lg:py-10">
+    <section className="container mx-auto px-2 py-5">
       <div className="border-2 border-primary rounded-xl p-5 flex flex-col lg:flex-row items-center justify-center gap-10 mb-10 shadow-xl">
         <div className="relative mx-auto flex flex-col lg:flex-row-reverse items-center lg:gap-5">
           <div className="relative mx-auto lg:w-[280px] xl:w-full">
@@ -170,7 +170,7 @@ const SingleProductDetails = ({ params }) => {
             )}
           </div>
 
-          <div className="flex flex-row lg:flex-col justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto xl:w-[147px] border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
+          <div className="flex flex-row lg:flex-col justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto xl:w-[142px] border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
             {allMedia?.map((media, index) => (
               <div
                 key={index}
@@ -223,17 +223,9 @@ const SingleProductDetails = ({ params }) => {
           </div>
           <div className="flex items-center gap-4 text-textColor font-medium my-2">
             Price:{" "}
-            {singleProduct?.offerPrice ? (
-              <p className="text-primary text-xl">
-                {globalData?.results?.currency +
-                  " " +
-                  singleProduct?.offerPrice}
-              </p>
-            ) : (
-              <p className="text-primary text-xl">
-                {globalData?.results?.currency + " " + currentPrice}
-              </p>
-            )}
+            <p className="text-primary text-xl">
+              {globalData?.results?.currency + " " + currentPrice}
+            </p>
             {singleProduct?.offerPrice && (
               <p className="text-base line-through text-red-500">
                 {globalData?.results?.currency +
