@@ -51,7 +51,7 @@ const ProductEdit = ({ open, setOpen, itemId }) => {
           variants: variantData.selectedRowData.map((variant) => {
             const { images, ...rest } = variant;
 
-            const processedImages = images.map((image) => {
+            const processedImages = images?.map((image) => {
               if (
                 typeof image === "string" &&
                 image.startsWith(base_url_image)
@@ -63,7 +63,7 @@ const ProductEdit = ({ open, setOpen, itemId }) => {
 
             return {
               ...rest,
-              images: processedImages.filter(Boolean),
+              images: processedImages?.filter(Boolean),
             };
           }),
         }),

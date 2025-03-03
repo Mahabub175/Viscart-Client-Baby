@@ -67,8 +67,9 @@ const Categories = () => {
             breakpoints={{
               480: { slidesPerView: 2 },
               600: { slidesPerView: 3 },
-              1024: { slidesPerView: 4 },
+              1024: { slidesPerView: 3 },
               1280: { slidesPerView: 5 },
+              1600: { slidesPerView: 6 },
             }}
             autoplay={{
               delay: 5000,

@@ -21,7 +21,7 @@ const ProductTab = () => {
     (item) => item?.status !== "Inactive"
   );
 
-  const [activeTab, setActiveTab] = useState("Featured");
+  const [activeTab, setActiveTab] = useState("Best Offer");
 
   const filteredProducts = (tab) => {
     switch (tab) {
@@ -73,8 +73,9 @@ const ProductTab = () => {
             breakpoints={{
               480: { slidesPerView: 2 },
               600: { slidesPerView: 3 },
-              1024: { slidesPerView: 4 },
+              1024: { slidesPerView: 3 },
               1280: { slidesPerView: 5 },
+              1600: { slidesPerView: 6 },
             }}
             autoplay={{
               delay: 5000,
@@ -90,7 +91,7 @@ const ProductTab = () => {
           </Swiper>
           <div className="flex items-center justify-center gap-5">
             <button
-              className="absolute top-[50%] -left-1 lg:top-[3%] lg:left-[90%] z-10 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white text-black border border-primary hover:bg-primary hover:text-white duration-300"
+              className="absolute top-[50%] -left-1 lg:top-[3%] lg:left-[88%] xl:left-[90%] xxl:left-[93%] z-10 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white text-black border border-primary hover:bg-primary hover:text-white duration-300"
               onClick={() => swiperRef.current?.slidePrev()}
             >
               <FaAngleLeft className="text-xl" />

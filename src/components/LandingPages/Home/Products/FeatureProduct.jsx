@@ -39,7 +39,7 @@ const FeatureProduct = () => {
 
   return (
     <section className="pt-10 my-container -mb-20">
-      <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8`}>
+      <div className={`grid grid-cols-1 gap-8`}>
         {topCategories?.map((category) => (
           <div key={category.name} className="mb-10 relative">
             <h2 className="text-2xl font-medium mb-6 border-b pb-4">

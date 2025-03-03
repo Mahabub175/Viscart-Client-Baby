@@ -12,10 +12,11 @@ import { formatImagePath } from "@/utilities/lib/formatImagePath";
 import SingleProductCart from "./SingleProductCart";
 import { toast } from "sonner";
 import AttributeOptionSelector from "@/components/Shared/Product/AttributeOptionSelector";
+import RadioAttributeSelector from "@/components/Shared/Product/RadioAttributeSelector";
 
 const SinglePageCart = ({ params }) => {
   const { data: globalData } = useGetAllGlobalSettingQuery();
-  const { data: singleProduct } = useGetSingleProductBySlugQuery(
+  const { data: singleProduct, isFetching } = useGetSingleProductBySlugQuery(
     params?.productId
   );
 
@@ -85,13 +86,15 @@ const SinglePageCart = ({ params }) => {
 
   const currentPrice = currentVariant
     ? currentVariant?.sellingPrice
-    : singleProduct?.offerPrice ?? singleProduct?.sellingPrice;
+    : singleProduct?.offerPrice && singleProduct?.offerPrice > 0
+    ? singleProduct?.offerPrice
+    : singleProduct?.sellingPrice;
 
   const currentImage = selectedImage
     ? selectedImage
     : currentVariant?.images && currentVariant.images.length > 0
     ? formatImagePath(currentVariant.images[0])
-    : formatImagePath(singleProduct?.mainImage);
+    : singleProduct?.mainImage;
 
   const allMedia =
     variantMedia.length > 0
@@ -100,9 +103,7 @@ const SinglePageCart = ({ params }) => {
           singleProduct?.video ? "video-thumbnail" : null,
         ].filter(Boolean)
       : [
-          singleProduct?.mainImage
-            ? formatImagePath(singleProduct.mainImage)
-            : null,
+          singleProduct?.mainImage ? singleProduct.mainImage : null,
           ...(Array.isArray(singleProduct?.images)
             ? singleProduct.images.map((image) =>
                 image ? formatImagePath(image) : null
@@ -143,6 +144,14 @@ const SinglePageCart = ({ params }) => {
     }
   };
 
+  if (isFetching) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
   const isOutOfStock = singleProduct?.stock <= 0 || currentVariant?.stock <= 0;
   return (
     <section className="container mx-auto px-2 lg:px-5">
@@ -172,39 +181,38 @@ const SinglePageCart = ({ params }) => {
               ) : (
                 <p>No image available</p>
               )}
-            </div>
-
-            <div className="flex flex-row lg:flex-col justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto xl:w-[146px] border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
-              {allMedia?.map((media, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleMediaClick(media)}
-                  className={`cursor-pointer border-2 rounded-xl ${
-                    selectedImage === media ||
-                    (media === "video-thumbnail" && isVideoPlaying)
-                      ? "border-primary"
-                      : "border-gray-300"
-                  }`}
-                >
-                  {media === "video-thumbnail" ? (
-                    <div className="flex items-center justify-center bg-black rounded-xl w-20 h-20">
-                      <FaPlay className="text-white text-2xl" />
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex items-center justify-center bg-black rounded-xl w-20 h-20">
-                        <Image
-                          src={media}
-                          alt={`media ${index}`}
-                          height={80}
-                          width={80}
-                          className="object-cover rounded-xl"
-                        />
+              <div className="flex justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
+                {allMedia?.map((media, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleMediaClick(media)}
+                    className={`cursor-pointer border-2 rounded-xl ${
+                      selectedImage === media ||
+                      (media === "video-thumbnail" && isVideoPlaying)
+                        ? "border-primary"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {media === "video-thumbnail" ? (
+                      <div className="flex items-center justify-center rounded-xl w-20 h-20">
+                        <FaPlay className="text-primary text-2xl" />
                       </div>
-                    </>
-                  )}
-                </div>
-              ))}
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-center rounded-xl w-20 h-20">
+                          <Image
+                            src={media}
+                            alt={`media ${index}`}
+                            height={80}
+                            width={80}
+                            className="object-cover rounded-xl"
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <div className="lg:w-1/2 flex flex-col">
@@ -243,7 +251,7 @@ const SinglePageCart = ({ params }) => {
               )}
             </div>
 
-            <AttributeOptionSelector
+            <RadioAttributeSelector
               groupedAttributes={groupedAttributes}
               selectedAttributes={selectedAttributes}
               handleAttributeSelect={handleAttributeSelect}

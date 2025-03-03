@@ -32,9 +32,10 @@ const Brands = () => {
           spaceBetween={20}
           slidesPerView={2}
           breakpoints={{
-            640: { slidesPerView: 2 },
-            768: { slidesPerView: 3 },
-            1024: { slidesPerView: 5 },
+            480: { slidesPerView: 2 },
+            500: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
+            1480: { slidesPerView: 5 },
           }}
           navigation
           autoplay={{
@@ -45,7 +46,7 @@ const Brands = () => {
         >
           {activeBrands?.map((item) => {
             return (
-              <SwiperSlide key={item?._id}>
+              <SwiperSlide key={item?._id} className="py-5">
                 <LinkButton href={`/products?filter=${item?.name}`}>
                   <Image
                     src={
@@ -55,7 +56,7 @@ const Brands = () => {
                     alt={item?.name ?? "demo"}
                     width={240}
                     height={240}
-                    className="border-2 border-transparent hover:border-primary duration-500 w-[200px] h-[200px] rounded-xl mx-auto"
+                    className="bg-white shadow-xl border-2 border-transparent hover:border-primary duration-500 lg:w-[220px] h-[220px] rounded-3xl mx-auto object-cover"
                   />
                 </LinkButton>
               </SwiperSlide>

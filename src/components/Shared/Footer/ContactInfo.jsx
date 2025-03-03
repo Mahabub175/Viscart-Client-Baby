@@ -12,7 +12,7 @@ const ContactInfo = ({ globalData }) => {
         alt="logo"
         height={200}
         width={200}
-        className="-mt-16"
+        className="-mt-10"
       />
       <div className="flex items-center gap-2 lg:w-5/6 -mt-2">
         <FaLocationDot className="text-primary" />

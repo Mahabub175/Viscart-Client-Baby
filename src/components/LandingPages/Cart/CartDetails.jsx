@@ -33,9 +33,11 @@ const CartDetails = () => {
   const dispatch = useDispatch();
   const { data: globalData } = useGetAllGlobalSettingQuery();
 
-  const { data: cartData, isError } = useGetSingleCartByUserQuery(
-    user?._id ?? deviceId
-  );
+  const {
+    data: cartData,
+    isError,
+    isFetching,
+  } = useGetSingleCartByUserQuery(user?._id ?? deviceId);
 
   const [deleteCart] = useDeleteCartMutation();
   const [deleteBulkCart] = useDeleteBulkCartMutation();
@@ -172,6 +174,14 @@ const CartDetails = () => {
       toast.error("Error in order creation process!");
     }
   };
+
+  if (isFetching) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <section className="container mx-auto px-5 lg:py-10 relative">

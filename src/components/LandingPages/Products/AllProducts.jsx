@@ -34,7 +34,7 @@ const AllProducts = ({ searchParams }) => {
   const { data: globalData } = useGetAllGlobalSettingQuery();
   const { data: brandData } = useGetAllBrandsQuery();
   const { data: categoryData } = useGetAllCategoriesQuery();
-  const { data: productData } = useGetProductsQuery({
+  const { data: productData, isFetching } = useGetProductsQuery({
     page: currentPage,
     limit: pageSize,
     search: "",
@@ -150,6 +150,14 @@ const AllProducts = ({ searchParams }) => {
   const handleAvailabilityChange = (e) => {
     setAvailability(e.target.value);
   };
+
+  if (isFetching) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <section className="xl:container mx-auto px-2 lg:px-5 py-10 relative -mt-10">

@@ -18,7 +18,7 @@ import AttributeOptionSelector from "@/components/Shared/Product/AttributeOption
 
 const SingleProductDetails = ({ params }) => {
   const { data: globalData } = useGetAllGlobalSettingQuery();
-  const { data: singleProduct } = useGetSingleProductBySlugQuery(
+  const { data: singleProduct, isFetching } = useGetSingleProductBySlugQuery(
     params?.productId
   );
 
@@ -95,13 +95,15 @@ const SingleProductDetails = ({ params }) => {
 
   const currentPrice = currentVariant
     ? currentVariant?.sellingPrice
-    : singleProduct?.offerPrice ?? singleProduct?.sellingPrice;
+    : singleProduct?.offerPrice && singleProduct?.offerPrice > 0
+    ? singleProduct?.offerPrice
+    : singleProduct?.sellingPrice;
 
   const currentImage = selectedImage
     ? selectedImage
     : currentVariant?.images && currentVariant.images.length > 0
     ? formatImagePath(currentVariant.images[0])
-    : formatImagePath(singleProduct?.mainImage);
+    : singleProduct?.mainImage;
 
   const allMedia =
     variantMedia.length > 0
@@ -110,9 +112,7 @@ const SingleProductDetails = ({ params }) => {
           singleProduct?.video ? "video-thumbnail" : null,
         ].filter(Boolean)
       : [
-          singleProduct?.mainImage
-            ? formatImagePath(singleProduct.mainImage)
-            : null,
+          singleProduct?.mainImage ? singleProduct.mainImage : null,
           ...(Array.isArray(singleProduct?.images)
             ? singleProduct.images.map((image) =>
                 image ? formatImagePath(image) : null
@@ -141,6 +141,14 @@ const SingleProductDetails = ({ params }) => {
     }
   };
 
+  if (isFetching) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
   return (
     <section className="container mx-auto px-2 py-5">
       <div className="border-2 border-primary rounded-xl p-5 flex flex-col lg:flex-row items-center justify-center gap-10 mb-10 shadow-xl">
@@ -168,39 +176,38 @@ const SingleProductDetails = ({ params }) => {
             ) : (
               <p>No image available</p>
             )}
-          </div>
-
-          <div className="flex flex-row lg:flex-col justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto xl:w-[142px] border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
-            {allMedia?.map((media, index) => (
-              <div
-                key={index}
-                onClick={() => handleMediaClick(media)}
-                className={`cursor-pointer border-2 rounded-xl ${
-                  selectedImage === media ||
-                  (media === "video-thumbnail" && isVideoPlaying)
-                    ? "border-primary"
-                    : "border-gray-300"
-                }`}
-              >
-                {media === "video-thumbnail" ? (
-                  <div className="flex items-center justify-center rounded-xl w-20 h-20">
-                    <FaPlay className="text-white text-2xl" />
-                  </div>
-                ) : (
-                  <>
+            <div className="flex justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
+              {allMedia?.map((media, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleMediaClick(media)}
+                  className={`cursor-pointer border-2 rounded-xl ${
+                    selectedImage === media ||
+                    (media === "video-thumbnail" && isVideoPlaying)
+                      ? "border-primary"
+                      : "border-gray-300"
+                  }`}
+                >
+                  {media === "video-thumbnail" ? (
                     <div className="flex items-center justify-center rounded-xl w-20 h-20">
-                      <Image
-                        src={media}
-                        alt={`media ${index}`}
-                        height={80}
-                        width={80}
-                        className="object-cover rounded-xl"
-                      />
+                      <FaPlay className="text-primary text-2xl" />
                     </div>
-                  </>
-                )}
-              </div>
-            ))}
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-center rounded-xl w-20 h-20">
+                        <Image
+                          src={media}
+                          alt={`media ${index}`}
+                          height={80}
+                          width={80}
+                          className="object-cover rounded-xl"
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <div className="lg:w-1/2 flex flex-col text-sm lg:text-base">

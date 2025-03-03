@@ -95,6 +95,11 @@ const AttributeOptionSelector = ({
                         {option.label}
                       </span>
                     )}
+                    {attributeName.toLowerCase() === "color" && (
+                      <p className="text-xs mt-2 text-center">
+                        {option?.name ?? "Color"}
+                      </p>
+                    )}
                   </div>
                 );
               })}

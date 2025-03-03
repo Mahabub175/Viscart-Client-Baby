@@ -63,7 +63,9 @@ const QuickProductView = ({
 
   const currentPrice = currentVariant
     ? currentVariant?.sellingPrice
-    : item?.offerPrice ?? item?.sellingPrice;
+    : item?.offerPrice && item?.offerPrice > 0
+    ? item?.offerPrice
+    : item?.sellingPrice;
 
   const currentImage = currentVariant?.images?.length
     ? formatImagePath(currentVariant.images[0])
@@ -116,11 +118,22 @@ const QuickProductView = ({
               item={item}
             />
 
-            <div className="flex items-center gap-4 text-textColor font-bold my-2">
+            <div className="flex items-center gap-4 text-textColor font-bold mb-2 mt-6">
               Price:
-              <p className="text-primary text-xl">
-                {globalData?.results?.currency + " " + currentPrice}
-              </p>
+              {item?.offerPrice && (
+                <p className="text-sm lg:text-base font-medium line-through text-red-500">
+                  {globalData?.results?.currency + " " + item?.sellingPrice}
+                </p>
+              )}
+              {item?.offerPrice ? (
+                <p className="text-primary text-sm lg:text-xl font-medium">
+                  {globalData?.results?.currency + " " + currentPrice}
+                </p>
+              ) : (
+                <p className="text-primary text-sm lg:text-xl font-medium">
+                  {globalData?.results?.currency + " " + item?.sellingPrice}
+                </p>
+              )}
             </div>
 
             <hr />

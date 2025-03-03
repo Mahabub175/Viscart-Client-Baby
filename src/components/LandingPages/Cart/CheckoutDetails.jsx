@@ -19,7 +19,7 @@ const CheckoutDetails = ({
   shippingFee,
   setGrandTotal,
 }) => {
-  const [discountOption, setDiscountOption] = useState("coupon");
+  const [discountOption, setDiscountOption] = useState("");
 
   const { data: globalData } = useGetAllGlobalSettingQuery();
 

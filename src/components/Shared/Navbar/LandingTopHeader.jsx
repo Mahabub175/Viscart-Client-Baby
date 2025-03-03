@@ -197,7 +197,7 @@ const LandingTopHeader = () => {
   );
 
   return (
-    <div className="md:flex items-center justify-between xl:container mx-auto gap-5 px-5 py-0 -my-3">
+    <div className="md:flex items-center justify-between xl:container mx-auto gap-5 px-5 py-0 -my-1">
       <div className="flex flex-col md:flex-row items-center gap-10">
         <Link href={"/"}>
           <Image
