@@ -4,7 +4,7 @@ import CustomSelect from "@/components/Reusable/Form/CustomSelect";
 import { useGetAllGlobalSettingQuery } from "@/redux/services/globalSetting/globalSettingApi";
 import { Form } from "antd";
 
-const CheckoutInfo = () => {
+const CheckoutInfo = ({ isLoading }) => {
   const form = Form.useFormInstance();
   const paymentType = Form.useWatch("paymentType", form);
 
@@ -52,7 +52,7 @@ const CheckoutInfo = () => {
         </div>
       )}
 
-      <SubmitButton fullWidth text="Order Now" />
+      <SubmitButton fullWidth text="Order Now" loading={isLoading} />
     </div>
   );
 };

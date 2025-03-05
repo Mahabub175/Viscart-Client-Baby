@@ -4,6 +4,7 @@ import { useGetAllGlobalSettingQuery } from "@/redux/services/globalSetting/glob
 import { useGetAllProductsQuery } from "@/redux/services/product/productApi";
 import { Rate, Tooltip } from "antd";
 import Image from "next/image";
+import Link from "next/link";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -12,7 +13,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useRef } from "react";
 import { formatImagePath } from "@/utilities/lib/formatImagePath";
-import LinkButton from "@/components/Shared/LinkButton";
 
 const FeatureProduct = () => {
   const swiperRef = useRef(null);
@@ -38,11 +38,17 @@ const FeatureProduct = () => {
     .slice(0, 3);
 
   return (
-    <section className="pt-10 my-container -mb-20">
-      <div className={`grid grid-cols-1 gap-8`}>
+    <section className="pt-10 my-container">
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 ${
+          topCategories?.length
+            ? `lg:grid-cols-${topCategories?.length}`
+            : "lg:grid-cols-1"
+        } gap-8`}
+      >
         {topCategories?.map((category) => (
           <div key={category.name} className="mb-10 relative">
-            <h2 className="text-2xl font-medium mb-6 border-b pb-4">
+            <h2 className="text-2xl font-bold mb-6 border-b pb-4">
               {category.name}
             </h2>
 
@@ -87,22 +93,20 @@ const FeatureProduct = () => {
                         {slideProducts?.map((item) => (
                           <div
                             key={item._id}
-                            className="flex items-center gap-5 rounded-xl bg-white shadow-xl p-3 lg:h-[150px] group border border-transparent hover:border-primary duration-300"
+                            className="flex items-center gap-5 rounded-xl bg-white shadow-xl p-3 h-[150px]"
                           >
-                            <div className="w-[100px] h-[100px] rounded-xl overflow-hidden">
-                              <Image
-                                src={formatImagePath(item?.mainImage)}
-                                alt={item?.name}
-                                height={100}
-                                width={100}
-                                className="rounded-xl group-hover:scale-110 duration-300"
-                              />
-                            </div>
-                            <LinkButton href={`/products/${item?.slug}`}>
+                            <Image
+                              src={formatImagePath(item?.mainImage)}
+                              alt={item?.name}
+                              height={100}
+                              width={100}
+                              className="rounded-xl"
+                            />
+                            <Link href={`/products/${item?.slug}`}>
                               <Tooltip placement="top" title={item?.name}>
-                                <h2 className="text-start font-medium mt-2 mb-2">
-                                  {item?.name.length > 35
-                                    ? item.name.slice(0, 35).concat("...")
+                                <h2 className="text-start font-semibold mt-2 mb-6">
+                                  {item?.name.length > 40
+                                    ? item.name.slice(0, 40).concat("...")
                                     : item.name}
                                 </h2>
                               </Tooltip>
@@ -112,33 +116,32 @@ const FeatureProduct = () => {
                                   disabled
                                   value={item?.ratings?.average}
                                   allowHalf
-                                  className="text-sm lg:text-base"
                                 />
                               </div>
 
                               <div className="flex items-center gap-4 justify-start">
                                 {item?.offerPrice && (
-                                  <p className="text-sm lg:text-base font-medium line-through text-red-500">
+                                  <p className="text-sm lg:text-base font-bold line-through text-red-500">
                                     {globalData?.results?.currency +
                                       " " +
                                       item?.sellingPrice}
                                   </p>
                                 )}
                                 {item?.offerPrice ? (
-                                  <p className="text-primary text-sm lg:text-xl font-medium">
+                                  <p className="text-primary lg:text-2xl font-bold">
                                     {globalData?.results?.currency +
                                       " " +
                                       item?.offerPrice}
                                   </p>
                                 ) : (
-                                  <p className="text-primary text-sm lg:text-xl font-medium">
+                                  <p className="text-primary lg:text-2xl font-bold">
                                     {globalData?.results?.currency +
                                       " " +
                                       item?.sellingPrice}
                                   </p>
                                 )}
                               </div>
-                            </LinkButton>
+                            </Link>
                           </div>
                         ))}
                       </div>

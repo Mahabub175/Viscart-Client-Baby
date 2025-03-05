@@ -42,7 +42,7 @@ const CartDetails = () => {
   const [deleteCart] = useDeleteCartMutation();
   const [deleteBulkCart] = useDeleteBulkCartMutation();
 
-  const [addOrder] = useAddOrderMutation();
+  const [addOrder, { isLoading }] = useAddOrderMutation();
   const [signUp] = useSignUpMutation();
   const [login] = useLoginMutation();
 
@@ -74,6 +74,10 @@ const CartDetails = () => {
   };
 
   const onSubmit = async (values) => {
+    if (values?.number?.length !== 11) {
+      toast.error("Please enter a valid phone number");
+      return;
+    }
     const toastId = toast.loading("Creating Order...");
     let signUpResponse;
 
@@ -270,7 +274,7 @@ const CartDetails = () => {
 
               <div className="lg:w-2/6 w-full border-2 border-primary rounded-lg p-5">
                 <CustomForm onSubmit={onSubmit}>
-                  <CheckoutInfo />
+                  <CheckoutInfo isLoading={isLoading} />
                 </CustomForm>
               </div>
             </div>

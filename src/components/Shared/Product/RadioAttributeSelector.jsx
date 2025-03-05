@@ -17,7 +17,10 @@ const RadioAttributeSelector = ({
       {groupedAttributes &&
         Object.entries(groupedAttributes).map(([attributeName, options]) => (
           <div key={attributeName} className="flex flex-col gap-4 my-4">
-            <span className="font-bold">{attributeName}:</span>
+            <span className="font-bold">
+              {attributeName} :{" "}
+              {attributeName === "Color" ? "(কালার সিলেক্ট করুন)" : ""}
+            </span>
             <div className="flex flex-col gap-2">
               {options.map((option) => {
                 const variantWithImage = item?.variants.find((variant) =>

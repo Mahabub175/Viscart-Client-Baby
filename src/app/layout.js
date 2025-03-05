@@ -14,11 +14,11 @@ export const metadata = {
 const RootLayout = ({ children }) => {
   return (
     <html lang="en">
-      <GoogleTagManager gtmId="GTM-KWXB5SSR" />
+      <GoogleTagManager gtmId="GTM-MSW8G3N5" />
       <body className={interFont.className}>
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-KWXB5SSR"
+            src="https://www.googletagmanager.com/ns.html?id=GTM-MSW8G3N5"
             height="0"
             width="0"
             style={{ display: "none", visibility: "hidden" }}
