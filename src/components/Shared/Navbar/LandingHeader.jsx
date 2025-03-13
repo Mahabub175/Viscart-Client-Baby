@@ -134,8 +134,8 @@ const LandingHeader = () => {
 
     const filteredOptions = products?.results?.filter(
       (product) =>
-        product.name.toLowerCase().includes(value.toLowerCase()) ||
-        product.category.name?.toLowerCase().includes(value.toLowerCase())
+        product?.name?.toLowerCase().includes(value.toLowerCase()) ||
+        product?.category?.name?.toLowerCase().includes(value.toLowerCase())
     );
 
     setOptions(
@@ -191,6 +191,7 @@ const LandingHeader = () => {
                   alt="logo"
                   width={80}
                   height={80}
+                  className="w-full h-full"
                 />
               </Link>
               <div className="md:flex items-center gap-4 ">
