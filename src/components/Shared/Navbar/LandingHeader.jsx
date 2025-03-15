@@ -191,10 +191,10 @@ const LandingHeader = () => {
                   alt="logo"
                   width={80}
                   height={80}
-                  className="w-full h-full"
+                  className="w-fit h-fit py-3"
                 />
               </Link>
-              <div className="md:flex items-center gap-4 ">
+              <div className="md:flex items-center gap-4">
                 {user?._id ? (
                   <>
                     {" "}

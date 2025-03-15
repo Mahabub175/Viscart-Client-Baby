@@ -205,7 +205,7 @@ const LandingTopHeader = () => {
             alt="logo"
             width={100}
             height={100}
-            className="w-full h-[100px]"
+            className="w-full h-full py-3"
           />
         </Link>
       </div>
@@ -220,7 +220,7 @@ const LandingTopHeader = () => {
         <FaSearch className="absolute right-2 top-1/2 -translate-y-1/2 text-primary text-xl" />
       </div>
       {routes}
-      <div className="mt-10 md:mt-0 md:flex items-center gap-4 ">
+      <div className="mt-10 md:mt-0 md:flex items-center gap-4">
         {user?._id && (
           <>
             {" "}

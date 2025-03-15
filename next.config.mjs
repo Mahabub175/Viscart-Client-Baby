@@ -10,6 +10,7 @@ const nextConfig = {
       "viscartdemoapi.moonsgallerysystem.com",
       "photohouseapi.photohousemagazine.com",
       "api.arshopsbd.com",
+      "babyapi.moonsgallerysystem.com",
       "facebook.com",
     ],
   },
