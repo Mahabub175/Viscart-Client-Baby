@@ -229,7 +229,7 @@ const AllProducts = ({ searchParams }) => {
   }, [loading]);
 
   return (
-    <section className="pt-5 pb-10 relative">
+    <section className="lg:pt-5 pb-10 relative">
       <div className="my-container">
         <div className="bg-white flex items-center gap-2 justify-between py-3 px-2 lg:px-6 mb-6 rounded-xl">
           <p className="text-xs md:text-base">

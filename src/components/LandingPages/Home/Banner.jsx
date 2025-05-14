@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import { Navigation, Pagination } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { SwiperSlide, Swiper } from "swiper/react";
 import "swiper/css";
 import { useGetAllSlidersQuery } from "@/redux/services/slider/sliderApi";
@@ -40,10 +40,19 @@ const Banner = () => {
         onBeforeInit={(swiper) => {
           swiperRef.current = swiper;
         }}
-        modules={[Navigation, Pagination]}
+        modules={[Navigation, Pagination, Autoplay]}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
+        pagination={{
+          clickable: true,
+          el: ".custom-pagination",
+        }}
         slidesPerView={1}
         navigation
-        className="max-h-[450px] rounded-xl"
+        className="mySwiper"
+        loop
       >
         {activeSliders?.map((item) => {
           return (
@@ -57,7 +66,7 @@ const Banner = () => {
                   alt={item?.name ?? "Demo"}
                   width={2500}
                   height={450}
-                  className="h-[200px] lg:h-fit w-full rounded-xl"
+                  className="h-[200px] lg:h-[600px] object-cover w-full rounded-xl"
                 />
               </LinkButton>
             </SwiperSlide>
