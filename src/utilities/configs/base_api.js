@@ -1,5 +1,3 @@
-// export const base_url = "https://api.arshopsbd.com/api/v1";
-// export const base_url_image = "https://api.arshopsbd.com/";
 export const base_url = "https://babyapi.moonsgallerysystem.com/api/v1";
 export const base_url_image = "https://babyapi.moonsgallerysystem.com/";
 // export const base_url = "http://localhost:5000/api/v1";

@@ -21,7 +21,7 @@ const ProductTab = () => {
     (item) => item?.status !== "Inactive"
   );
 
-  const [activeTab, setActiveTab] = useState("Best Offer");
+  const [activeTab, setActiveTab] = useState("Featured");
 
   const filteredProducts = (tab) => {
     switch (tab) {
@@ -52,7 +52,7 @@ const ProductTab = () => {
         <Tabs
           activeKey={activeTab}
           size="large"
-          className="font-semibold max-w-[350px] md:max-w-full"
+          className="font-semibold max-w-[350px] lg:max-w-[600px]"
           onChange={(key) => setActiveTab(key)}
         >
           {tabs?.map((item) => (
@@ -73,9 +73,7 @@ const ProductTab = () => {
             breakpoints={{
               480: { slidesPerView: 2 },
               600: { slidesPerView: 3 },
-              1024: { slidesPerView: 3 },
-              1280: { slidesPerView: 5 },
-              1600: { slidesPerView: 6 },
+              1024: { slidesPerView: 5 },
             }}
             autoplay={{
               delay: 5000,
@@ -91,7 +89,7 @@ const ProductTab = () => {
           </Swiper>
           <div className="flex items-center justify-center gap-5">
             <button
-              className="absolute top-[50%] -left-1 lg:top-[3%] lg:left-[88%] xl:left-[90%] xxl:left-[93%] z-10 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white text-black border border-primary hover:bg-primary hover:text-white duration-300"
+              className="absolute top-[50%] -left-1 lg:top-[3%] lg:left-[92%] z-10 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white text-black border border-primary hover:bg-primary hover:text-white duration-300"
               onClick={() => swiperRef.current?.slidePrev()}
             >
               <FaAngleLeft className="text-xl" />

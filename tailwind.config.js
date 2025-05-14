@@ -10,10 +10,12 @@ module.exports = {
       colors: {
         primary: "var(--primaryColor)",
         primaryLight: "var(--secondaryColor)",
+        navyBlue: "#00235B",
         orange: "#F97316",
         danger: "#FB564B",
         textColor: "#4D4D4D",
         grey: "#f1f1f1",
+        redLight: "rgba(221, 24, 28, 0.05)",
       },
       boxShadow: {
         xl: "0 0 10px 5px #e5e5e5",
@@ -21,7 +23,7 @@ module.exports = {
       screens: {
         sm: "580px",
         md: "600px",
-        lg: "880px",
+        lg: "980px",
         xl: "1280px",
         xxl: "1600px",
       },

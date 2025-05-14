@@ -19,9 +19,9 @@ const Brands = () => {
   );
 
   return (
-    <section className="my-container p-5 rounded-xl mt-20 relative">
+    <section className="my-container p-5 rounded-xl mt-1 lg:mt-10 relative -my-20">
       <h2 className="text-xl lg:text-3xl font-medium text-start mb-10 border-b pb-4">
-        Popular Brands
+        Top Brands We Deal With
       </h2>
       <div>
         <Swiper
@@ -32,10 +32,9 @@ const Brands = () => {
           spaceBetween={20}
           slidesPerView={2}
           breakpoints={{
-            480: { slidesPerView: 2 },
-            500: { slidesPerView: 3 },
-            1280: { slidesPerView: 4 },
-            1480: { slidesPerView: 5 },
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1024: { slidesPerView: 5 },
           }}
           navigation
           autoplay={{
@@ -43,10 +42,11 @@ const Brands = () => {
             disableOnInteraction: false,
           }}
           className="mySwiper"
+          loop={true}
         >
           {activeBrands?.map((item) => {
             return (
-              <SwiperSlide key={item?._id} className="py-5">
+              <SwiperSlide key={item?._id}>
                 <LinkButton href={`/products?filter=${item?.name}`}>
                   <Image
                     src={
@@ -56,7 +56,7 @@ const Brands = () => {
                     alt={item?.name ?? "demo"}
                     width={240}
                     height={240}
-                    className="bg-white shadow-xl border-2 border-transparent hover:border-primary duration-500 lg:w-[220px] h-[220px] rounded-3xl mx-auto object-cover"
+                    className="border-2 hover:border-primary duration-500 w-[200px] h-[150px] lg:h-[200px] rounded-xl mx-auto object-cover"
                   />
                 </LinkButton>
               </SwiperSlide>
@@ -65,13 +65,13 @@ const Brands = () => {
         </Swiper>
         <div className="flex items-center justify-center gap-5 mt-10">
           <button
-            className="lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white text-black border border-primary hover:bg-primary hover:text-white duration-300 absolute top-[8%] right-24"
+            className="lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white text-black border border-primary hover:bg-primary hover:text-white duration-300 absolute top-[6.5%] right-10   lg:right-24"
             onClick={() => swiperRef.current.slidePrev()}
           >
             <FaAngleLeft className="text-xl" />
           </button>
           <button
-            className="lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white text-black border border-primary hover:bg-primary hover:text-white duration-300 absolute top-[8%] right-12"
+            className="lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white text-black border border-primary hover:bg-primary hover:text-white duration-300 absolute top-[6.5%] right-2 lg:right-12"
             onClick={() => swiperRef.current.slideNext()}
           >
             <FaAngleRight className="text-xl" />

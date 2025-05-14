@@ -3,7 +3,6 @@ import { useGetAllGlobalSettingQuery } from "@/redux/services/globalSetting/glob
 import { formatImagePath } from "@/utilities/lib/formatImagePath";
 import { Modal, Rate } from "antd";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import AttributeOptionSelector from "./AttributeOptionSelector";
 
@@ -16,20 +15,19 @@ const QuickProductView = ({
 }) => {
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [currentVariant, setCurrentVariant] = useState(null);
-  const pathname = usePathname();
   const { data: globalData } = useGetAllGlobalSettingQuery();
 
   const groupedAttributes = item?.variants?.reduce((acc, variant) => {
     variant.attributeCombination.forEach((attribute) => {
-      const attributeName = attribute.attribute.name;
+      const attributeName = attribute?.attribute?.name;
       if (!acc[attributeName]) {
         acc[attributeName] = [];
       }
       if (!acc[attributeName].some((opt) => opt.name === attribute.name)) {
         acc[attributeName].push({
-          name: attribute.name,
-          label: attribute.label || attribute.name,
-          _id: attribute._id,
+          name: attribute?.name,
+          label: attribute?.label || attribute.name,
+          _id: attribute?._id,
         });
       }
     });
@@ -69,8 +67,6 @@ const QuickProductView = ({
 
   const currentImage = currentVariant?.images?.length
     ? formatImagePath(currentVariant.images[0])
-    : ["/products", "/wishlist", "/compare"].includes(pathname)
-    ? item?.mainImage
     : formatImagePath(item?.mainImage);
 
   return (
@@ -82,73 +78,87 @@ const QuickProductView = ({
       loading={!item}
       width={850}
     >
-      <div>
-        <div className="flex flex-col items-center justify-center lg:flex-row gap-10 pt-5">
-          <div className="w-full">
-            <Image
-              src={currentImage}
-              alt={item?.name}
-              width={300}
-              height={300}
-              className="w-full h-[300px] object-contain rounded-xl"
-            />
+      <div className="flex flex-col items-center justify-center lg:flex-row gap-10 pt-5">
+        <div className="w-full">
+          <Image
+            src={currentImage}
+            alt={item?.name}
+            width={300}
+            height={300}
+            className="w-full h-[300px] object-contain rounded-xl"
+          />
+        </div>
+
+        <div className="w-full">
+          <h2 className="text-xl font-semibold">{item?.name}</h2>
+          <div className="flex items-center mt-4 gap-4 font-bold">
+            <Rate disabled value={item?.ratings?.average} allowHalf /> (
+            {item?.ratings?.count})
           </div>
+          <p>{item?.details}</p>
 
-          <div className="w-full">
-            <h2 className="text-xl font-semibold">{item?.name}</h2>
-            <div className="flex items-center mt-4 gap-4 font-bold">
-              <Rate disabled value={item?.ratings?.average} allowHalf /> (
-              {item?.ratings?.count})
+          <p className="font-bold my-2 text-textColor">
+            Category: {item?.category?.name}
+          </p>
+
+          {item?.brand && (
+            <p className="font-bold my-2 text-textColor">
+              Brand: {item?.brand?.name}
+            </p>
+          )}
+          {item?.generic && (
+            <p className="font-bold my-2 text-textColor">
+              Generic: {item?.generic?.name}
+            </p>
+          )}
+          {item?.productModel && (
+            <div className="font-bold my-2 text-textColor">
+              Model: {item?.productModel}
             </div>
-            <p>{item?.details}</p>
+          )}
+          {(item?.weight || item?.weight > 0) && (
+            <div className="font-bold my-2 text-textColor">
+              Weight: {item?.weight} {item?.unit}
+            </div>
+          )}
 
-            {item?.brand && (
-              <p className="font-bold my-2 text-textColor">
-                Brand: {item?.brand?.name}
+          <AttributeOptionSelector
+            groupedAttributes={groupedAttributes}
+            selectedAttributes={selectedAttributes}
+            handleAttributeSelect={handleAttributeSelect}
+            item={item}
+          />
+
+          <div className="flex items-center gap-4 text-textColor font-bold my-2">
+            Price:{" "}
+            {item?.offerPrice && (
+              <p className="text-base line-through text-red-500">
+                {globalData?.results?.currency + " " + item?.sellingPrice}
               </p>
             )}
-            <p className="font-bold my-2 text-textColor">
-              Category: {item?.category?.name}
-            </p>
-
-            <AttributeOptionSelector
-              groupedAttributes={groupedAttributes}
-              selectedAttributes={selectedAttributes}
-              handleAttributeSelect={handleAttributeSelect}
-              item={item}
-            />
-
-            <div className="flex items-center gap-4 text-textColor font-bold mb-2 mt-6">
-              Price:
-              {item?.offerPrice && (
-                <p className="text-sm lg:text-base font-medium line-through text-red-500">
-                  {globalData?.results?.currency + " " + item?.sellingPrice}
-                </p>
-              )}
-              {item?.offerPrice ? (
-                <p className="text-primary text-sm lg:text-xl font-medium">
-                  {globalData?.results?.currency + " " + currentPrice}
-                </p>
-              ) : (
-                <p className="text-primary text-sm lg:text-xl font-medium">
-                  {globalData?.results?.currency + " " + item?.sellingPrice}
-                </p>
-              )}
-            </div>
-
-            <hr />
-
-            <ProductCountCart
-              item={item}
-              handleModalClose={handleModalClose}
-              previousSelectedVariant={currentVariant}
-              setPreviousSelectedVariant={setCurrentVariant}
-              fullWidth
-              isWishlist={isWishlist}
-              wishlistId={wishlistId}
-              selectedPreviousAttributes={selectedAttributes}
-            />
+            {item?.offerPrice ? (
+              <p className="text-primary text-xl">
+                {globalData?.results?.currency + " " + item?.offerPrice}
+              </p>
+            ) : (
+              <p className="text-primary text-xl">
+                {globalData?.results?.currency + " " + currentPrice}
+              </p>
+            )}
           </div>
+
+          <hr />
+
+          <ProductCountCart
+            item={item}
+            handleModalClose={handleModalClose}
+            previousSelectedVariant={currentVariant}
+            setPreviousSelectedVariant={setCurrentVariant}
+            fullWidth
+            isWishlist={isWishlist}
+            wishlistId={wishlistId}
+            selectedPreviousAttributes={selectedAttributes}
+          />
         </div>
       </div>
     </Modal>

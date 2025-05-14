@@ -4,12 +4,10 @@ import React, { useState } from "react";
 import QuickViewHover from "../../Products/QuickViewHover";
 import { useGetAllGlobalSettingQuery } from "@/redux/services/globalSetting/globalSettingApi";
 import { formatImagePath } from "@/utilities/lib/formatImagePath";
-import { usePathname } from "next/navigation";
 import LinkButton from "@/components/Shared/LinkButton";
 
 const ProductCard = ({ item }) => {
   const { data: globalData } = useGetAllGlobalSettingQuery();
-  const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -34,11 +32,7 @@ const ProductCard = ({ item }) => {
           </video>
         ) : (
           <Image
-            src={
-              pathname === "/products"
-                ? item?.mainImage
-                : formatImagePath(item?.mainImage)
-            }
+            src={formatImagePath(item?.mainImage)}
             alt={item?.name}
             width={230}
             height={220}

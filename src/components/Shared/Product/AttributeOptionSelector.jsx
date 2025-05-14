@@ -15,18 +15,15 @@ const AttributeOptionSelector = ({
     <>
       {groupedAttributes &&
         Object.entries(groupedAttributes).map(([attributeName, options]) => (
-          <div key={attributeName} className="flex flex-col gap-2 my-2">
-            <span className="font-bold">
-              {attributeName} :{" "}
-              {attributeName === "Color" ? "(কালার সিলেক্ট করুন)" : ""}
-            </span>
+          <div key={attributeName} className="flex items-center gap-2 my-2">
+            <span className="font-bold">{attributeName}:</span>
             <div className="flex flex-wrap items-center gap-2">
               {options.map((option) => {
                 const variantWithImage = item?.variants.find((variant) =>
                   variant.attributeCombination.some(
                     (attr) =>
-                      attr.attribute.name === attributeName &&
-                      attr.name === option.name
+                      attr?.attribute?.name === attributeName &&
+                      attr?.name === option?.name
                   )
                 );
 
@@ -97,11 +94,6 @@ const AttributeOptionSelector = ({
                       >
                         {option.label}
                       </span>
-                    )}
-                    {attributeName.toLowerCase() === "color" && (
-                      <p className="text-xs mt-2 text-center">
-                        {option?.name ?? "Color"}
-                      </p>
                     )}
                   </div>
                 );

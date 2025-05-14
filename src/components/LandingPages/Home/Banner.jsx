@@ -1,21 +1,37 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { Navigation, Pagination } from "swiper/modules";
 import { SwiperSlide, Swiper } from "swiper/react";
 import "swiper/css";
 import { useGetAllSlidersQuery } from "@/redux/services/slider/sliderApi";
 import LinkButton from "@/components/Shared/LinkButton";
+import { sendGTMEvent } from "@next/third-parties/google";
+import { useAddServerTrackingMutation } from "@/redux/services/serverTracking/serverTrackingApi";
+import useGetURL from "@/utilities/hooks/useGetURL";
 
 const Banner = () => {
   const swiperRef = useRef();
-
   const { data: sliders } = useGetAllSlidersQuery();
 
+  const url = useGetURL();
+  const [addServerTracking] = useAddServerTrackingMutation();
+
+  useEffect(() => {
+    sendGTMEvent({ event: "PageView", value: url });
+    const data = {
+      event: "PageView",
+      data: {
+        event_source_url: url,
+      },
+    };
+    addServerTracking(data);
+  }, [url]);
+
   const activeSliders = sliders?.results?.filter(
-    (item) => item.status === "Active"
+    (item) => item.status === "Active" && !item?.bottomBanner
   );
 
   return (

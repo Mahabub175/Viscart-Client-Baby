@@ -7,31 +7,28 @@ const AllOffers = () => {
   const { data: productData } = useGetAllProductsQuery();
 
   const filteredProducts = productData?.results?.filter(
-    (item) => item?.status !== "Inactive" && item?.offerPrice > 0
+    (item) =>
+      item?.status !== "Inactive" && (item?.offerPrice || item?.offerPrice > 0)
   );
 
   return (
-    <section>
-      <div className="lg:my-10 relative xl:container lg:px-5 mx-auto">
-        <div className="px-2 lg:px-5 bg-white shadow-xl rounded-xl py-5 lg:py-10">
-          {filteredProducts?.length ? (
-            <>
-              <h2 className="text-xl lg:text-3xl font-medium text-center mb-5 lg:mb-10">
-                Offer Products
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap gap-x-2 gap-y-5 lg:gap-10 lg:mt-10">
-                {filteredProducts?.map((product) => (
-                  <ProductCard key={product?._id} item={product} />
-                ))}
-              </div>
-            </>
-          ) : (
-            <p className="text-center">
-              No offer products available right now.
-            </p>
-          )}
+    <section className="my-container relative border p-2 rounded-xl mt-10 mb-20">
+      <h2 className="my-5 lg:my-10 text-3xl font-bold text-center text-primary">
+        Offer Products
+      </h2>
+      {filteredProducts?.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap lg:justify-center lg:items-center gap-5 mt-5 pb-5">
+          {filteredProducts?.map((product) => (
+            <div key={product?._id}>
+              <ProductCard item={product} />
+            </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        <div className="text-center text-xl font-semibold my-10 text-primaryLight">
+          No offer products found.
+        </div>
+      )}
     </section>
   );
 };

@@ -12,11 +12,10 @@ import { formatImagePath } from "@/utilities/lib/formatImagePath";
 import SingleProductCart from "./SingleProductCart";
 import { toast } from "sonner";
 import AttributeOptionSelector from "@/components/Shared/Product/AttributeOptionSelector";
-import RadioAttributeSelector from "@/components/Shared/Product/RadioAttributeSelector";
 
 const SinglePageCart = ({ params }) => {
   const { data: globalData } = useGetAllGlobalSettingQuery();
-  const { data: singleProduct, isFetching } = useGetSingleProductBySlugQuery(
+  const { data: singleProduct } = useGetSingleProductBySlugQuery(
     params?.productId
   );
 
@@ -94,7 +93,7 @@ const SinglePageCart = ({ params }) => {
     ? selectedImage
     : currentVariant?.images && currentVariant.images.length > 0
     ? formatImagePath(currentVariant.images[0])
-    : singleProduct?.mainImage;
+    : formatImagePath(singleProduct?.mainImage);
 
   const allMedia =
     variantMedia.length > 0
@@ -103,7 +102,9 @@ const SinglePageCart = ({ params }) => {
           singleProduct?.video ? "video-thumbnail" : null,
         ].filter(Boolean)
       : [
-          singleProduct?.mainImage ? singleProduct.mainImage : null,
+          singleProduct?.mainImage
+            ? formatImagePath(singleProduct.mainImage)
+            : null,
           ...(Array.isArray(singleProduct?.images)
             ? singleProduct.images.map((image) =>
                 image ? formatImagePath(image) : null
@@ -144,17 +145,9 @@ const SinglePageCart = ({ params }) => {
     }
   };
 
-  if (isFetching) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
   const isOutOfStock = singleProduct?.stock <= 0 || currentVariant?.stock <= 0;
   return (
-    <section className="container mx-auto px-2 lg:px-5">
+    <section className="my-container py-10 -mt-5 lg:-mt-0">
       <div className="border-2 border-primary rounded-xl p-5 mb-10 shadow-xl">
         <div className="flex flex-col lg:flex-row items-center justify-center gap-10 mb-10">
           <div className="relative mx-auto flex flex-col lg:flex-row-reverse items-center lg:gap-5">
@@ -181,45 +174,46 @@ const SinglePageCart = ({ params }) => {
               ) : (
                 <p>No image available</p>
               )}
-              <div className="flex justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
-                {allMedia?.map((media, index) => (
-                  <div
-                    key={index}
-                    onClick={() => handleMediaClick(media)}
-                    className={`cursor-pointer border-2 rounded-xl ${
-                      selectedImage === media ||
-                      (media === "video-thumbnail" && isVideoPlaying)
-                        ? "border-primary"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    {media === "video-thumbnail" ? (
-                      <div className="flex items-center justify-center rounded-xl w-20 h-20">
-                        <FaPlay className="text-primary text-2xl" />
+            </div>
+
+            <div className="flex flex-row lg:flex-col justify-start gap-2 mt-5 max-h-[400px] w-[300px] lg:w-auto xl:w-[149px] border rounded-xl p-4 !overflow-x-auto lg:overflow-y-auto thumbnail">
+              {allMedia?.map((media, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleMediaClick(media)}
+                  className={`cursor-pointer border-2 rounded-xl ${
+                    selectedImage === media ||
+                    (media === "video-thumbnail" && isVideoPlaying)
+                      ? "border-primary"
+                      : "border-gray-300"
+                  }`}
+                >
+                  {media === "video-thumbnail" ? (
+                    <div className="flex items-center justify-center bg-black rounded-xl w-20 h-20">
+                      <FaPlay className="text-white text-2xl" />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-center bg-black rounded-xl w-20 h-20">
+                        <Image
+                          src={media}
+                          alt={`media ${index}`}
+                          height={80}
+                          width={80}
+                          className="object-cover rounded-xl"
+                        />
                       </div>
-                    ) : (
-                      <>
-                        <div className="flex items-center justify-center rounded-xl w-20 h-20">
-                          <Image
-                            src={media}
-                            alt={`media ${index}`}
-                            height={80}
-                            width={80}
-                            className="object-cover rounded-xl"
-                          />
-                        </div>
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
-          <div className="lg:w-1/2 flex flex-col">
-            <h2 className="text-xl md:text-3xl font-medium mb-2">
+          <div className="lg:w-1/2 flex flex-col gap-3">
+            <h2 className="text-xl lg:text-3xl font-medium">
               {singleProduct?.name}
             </h2>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2">
               <span className="font-medium">Category:</span>
               <span>{singleProduct?.category?.name}</span>
             </div>
@@ -239,9 +233,17 @@ const SinglePageCart = ({ params }) => {
             </div>
             <div className="flex items-center gap-4 text-textColor font-medium my-2">
               Price:{" "}
-              <p className="text-primary text-xl">
-                {globalData?.results?.currency + " " + currentPrice}
-              </p>
+              {singleProduct?.offerPrice ? (
+                <p className="text-primary text-xl">
+                  {globalData?.results?.currency +
+                    " " +
+                    singleProduct?.offerPrice}
+                </p>
+              ) : (
+                <p className="text-primary text-xl">
+                  {globalData?.results?.currency + " " + currentPrice}
+                </p>
+              )}
               {singleProduct?.offerPrice && (
                 <p className="text-base line-through text-red-500">
                   {globalData?.results?.currency +
@@ -251,7 +253,7 @@ const SinglePageCart = ({ params }) => {
               )}
             </div>
 
-            <RadioAttributeSelector
+            <AttributeOptionSelector
               groupedAttributes={groupedAttributes}
               selectedAttributes={selectedAttributes}
               handleAttributeSelect={handleAttributeSelect}
@@ -304,8 +306,8 @@ const SinglePageCart = ({ params }) => {
           />
         </div>
       </div>
-      <div className="border-2 border-primary rounded-xl p-5 mb-10 shadow-xl bg-white flex flex-col items-start justify-start">
-        <div className="bg-primary mb-10 px-10 py-2 text-white font-medium rounded-lg">
+      <div className="border-2 border-primary rounded-xl p-5 mb-10 shadow-xl bg-white flex flex-col items-center justify-center">
+        <div className="bg-primary mb-10 px-10 py-2 text-white font-bold rounded-xl inline-block">
           Description
         </div>
         <div

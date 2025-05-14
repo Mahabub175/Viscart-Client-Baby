@@ -2,10 +2,6 @@
 
 import deleteImage from "@/assets/images/Trash-can.png";
 import CustomForm from "@/components/Reusable/Form/CustomForm";
-import {
-  useLoginMutation,
-  useSignUpMutation,
-} from "@/redux/services/auth/authApi";
 import { setUser, useCurrentUser } from "@/redux/services/auth/authSlice";
 import {
   useDeleteBulkCartMutation,
@@ -13,46 +9,50 @@ import {
   useGetSingleCartByUserQuery,
 } from "@/redux/services/cart/cartApi";
 import { useDeviceId } from "@/redux/services/device/deviceSlice";
+import { useGetAllGlobalSettingQuery } from "@/redux/services/globalSetting/globalSettingApi";
 import { useAddOrderMutation } from "@/redux/services/order/orderApi";
 import { appendToFormData } from "@/utilities/lib/appendToFormData";
+import { formatImagePath } from "@/utilities/lib/formatImagePath";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import CheckoutDetails from "./CheckoutDetails";
 import CheckoutInfo from "./CheckoutInfo";
-import { useGetAllGlobalSettingQuery } from "@/redux/services/globalSetting/globalSettingApi";
-import { formatImagePath } from "@/utilities/lib/formatImagePath";
-import { useRouter } from "next/navigation";
+import { useLoginMutation } from "@/redux/services/auth/authApi";
+import { sendGTMEvent } from "@next/third-parties/google";
+import useGetURL from "@/utilities/hooks/useGetURL";
+import { useAddServerTrackingMutation } from "@/redux/services/serverTracking/serverTrackingApi";
 
 const CartDetails = () => {
   const router = useRouter();
   const user = useSelector(useCurrentUser);
-  const deviceId = useSelector(useDeviceId);
   const dispatch = useDispatch();
+  const deviceId = useSelector(useDeviceId);
   const { data: globalData } = useGetAllGlobalSettingQuery();
 
-  const {
-    data: cartData,
-    isError,
-    isFetching,
-  } = useGetSingleCartByUserQuery(user?._id ?? deviceId);
+  const { data: cartData, isError } = useGetSingleCartByUserQuery(
+    user?._id ?? deviceId
+  );
 
   const [deleteCart] = useDeleteCartMutation();
   const [deleteBulkCart] = useDeleteBulkCartMutation();
-
-  const [addOrder, { isLoading }] = useAddOrderMutation();
-  const [signUp] = useSignUpMutation();
   const [login] = useLoginMutation();
+  const [addOrder, { isLoading }] = useAddOrderMutation();
 
   const [counts, setCounts] = useState({});
+  const [weight, setWeight] = useState({});
   const [subTotal, setSubTotal] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const [code, setCode] = useState("");
   const [deliveryOption, setDeliveryOption] = useState("insideDhaka");
   const [discount, setDiscount] = useState(null);
   const [grandTotal, setGrandTotal] = useState(0);
+
+  const url = useGetURL();
+  const [addServerTracking] = useAddServerTrackingMutation();
 
   useEffect(() => {
     if (cartData) {
@@ -65,8 +65,30 @@ const CartDetails = () => {
           {}
         )
       );
+
+      setWeight(
+        cartData?.reduce(
+          (acc, item) => ({
+            ...acc,
+            [item._id]: Number(item.weight) || 0,
+          }),
+          {}
+        )
+      );
     }
   }, [cartData]);
+
+  const extraCharge = cartData?.map(
+    (item) =>
+      item?.weight ||
+      0 * globalData?.results?.pricePerWeight * (counts[item._id] || 1)
+  );
+
+  const totalCharge = Math.max(
+    extraCharge?.reduce((total, charge) => total + charge, 0) -
+      globalData?.results?.pricePerWeight,
+    0
+  );
 
   const handleDelete = (itemId) => {
     deleteCart(itemId);
@@ -74,30 +96,17 @@ const CartDetails = () => {
   };
 
   const onSubmit = async (values) => {
-    if (values?.number?.length !== 11) {
-      toast.error("Please enter a valid phone number");
-      return;
-    }
     const toastId = toast.loading("Creating Order...");
-    let signUpResponse;
-
+    let loginResponse;
     try {
       if (!user) {
-        const signUpData = {
-          name: values?.name,
-          number: values?.number,
-          password: values?.number,
-        };
-
         try {
-          signUpResponse = await signUp(signUpData).unwrap();
-
           const loginData = {
             emailNumber: values?.number,
-            password: values?.number,
+            defaultPassword: values?.number,
           };
 
-          const loginResponse = await login(loginData).unwrap();
+          loginResponse = await login(loginData).unwrap();
           if (loginResponse.success) {
             dispatch(
               setUser({
@@ -107,9 +116,10 @@ const CartDetails = () => {
             );
           }
         } catch (error) {
-          if (error?.data?.errorMessage === "number already exists") {
-            toast.error("Number already exists");
-          }
+          toast.error(error?.message || "Please Register First!", {
+            id: toastId,
+          });
+          return;
         }
       }
 
@@ -117,7 +127,7 @@ const CartDetails = () => {
         try {
           const submittedData = {
             ...values,
-            user: signUpResponse?.data?._id ?? user?._id,
+            user: loginResponse?.data?.user?._id ?? user?._id,
             deviceId,
             products: cartData?.map((item) => ({
               product: item?.productId,
@@ -130,18 +140,28 @@ const CartDetails = () => {
                       .join(" ")})`
                   : ""),
               quantity: item?.quantity,
+              weight: item?.weight,
               sku: item?.sku,
             })),
             shippingFee,
+            extraFee: totalCharge,
+            paymentType: values?.paymentMethod,
             discount,
             deliveryOption,
             code,
-            grandTotal,
-            subTotal,
+            subTotal: parseFloat(subTotal?.toFixed(2)),
+            grandTotal: Number(grandTotal?.toFixed(2)),
           };
 
           if (values.paymentType === "cod") {
             submittedData.paymentMethod = "cod";
+            submittedData.paymentType = "COD";
+          }
+          if (
+            typeof values.paymentMethod === "string" &&
+            values.paymentMethod.startsWith("manual")
+          ) {
+            submittedData.paymentMethod = "manual";
           }
 
           const data = new FormData();
@@ -153,6 +173,15 @@ const CartDetails = () => {
             if (res?.error) {
               toast.error(res?.error?.data?.errorMessage, { id: toastId });
             } else if (res?.data?.success) {
+              sendGTMEvent({ event: "Purchase", value: submittedData });
+              const data = {
+                event: "Purchase",
+                data: {
+                  ...submittedData,
+                  event_source_url: url,
+                },
+              };
+              await addServerTracking(data);
               if (res?.data?.data?.gatewayUrl) {
                 window.location.href = res?.data?.data?.gatewayUrl;
               }
@@ -173,22 +202,14 @@ const CartDetails = () => {
           });
           console.error("Error preparing Order data:", error);
         }
-      }, 2000);
+      }, 1000);
     } catch (error) {
-      toast.error("Error in order creation process!");
+      toast.error("Error in order creation process!", { id: toastId });
     }
   };
 
-  if (isFetching) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
   return (
-    <section className="container mx-auto px-5 lg:py-10 relative">
+    <section className="container mx-auto px-5 lg:py-10 relative rounded-lg mb-10">
       <h2 className="font-normal text-2xl">Order List</h2>
       <div>
         {cartData?.length === 0 || !cartData || isError ? (
@@ -203,11 +224,11 @@ const CartDetails = () => {
               {cartData?.length} Items
             </h2>
             <div className="flex flex-col lg:flex-row items-start gap-4 justify-between my-10">
-              <div className="lg:w-3/6 border-2 border-primary rounded-lg p-5 lg:sticky top-10">
+              <div className="lg:w-3/6 border-2 border-primary rounded-lg p-5 lg:sticky top-10 w-full">
                 {cartData?.map((item) => (
                   <div
                     key={item?._id}
-                    className="flex flex-col lg:flex-row items-center gap-4 justify-center pb-5 mt-5 first:mt-0 border-b border-gray-300 last:border-b-0"
+                    className="flex flex-col xl:flex-row items-center gap-4 justify-center pb-5 mt-5 first:mt-0 border-b border-gray-300 last:border-b-0"
                   >
                     <div className="flex flex-[3] items-center gap-4">
                       <Image
@@ -231,6 +252,13 @@ const CartDetails = () => {
                         <div className="mt-2 font-semibold">
                           Quantity: {counts[item._id]}
                         </div>
+                        {item?.weight > 0 ? (
+                          <div className="mt-2 font-semibold">
+                            Weight:{" "}
+                            {(weight[item._id] * counts[item._id]).toFixed(1)}{" "}
+                            KG
+                          </div>
+                        ) : null}
                       </div>
                     </div>
 
@@ -269,6 +297,7 @@ const CartDetails = () => {
                   shippingFee={shippingFee}
                   setShippingFee={setShippingFee}
                   setGrandTotal={setGrandTotal}
+                  totalCharge={totalCharge}
                 />
               </div>
 

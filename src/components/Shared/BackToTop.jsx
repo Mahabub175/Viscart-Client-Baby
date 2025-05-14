@@ -29,11 +29,11 @@ const BackToTop = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-[10%] right-1 z-50">
+    <div className="fixed bottom-[10%] lg:bottom-[5%] right-2 lg:right-7 z-50">
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="bg-primary text-white rounded-full w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center text-base cursor-pointer"
+          className="bg-primary text-white rounded-full w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center text-xl cursor-pointer"
         >
           <IoIosArrowUp />
         </button>

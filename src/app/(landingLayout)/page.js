@@ -1,13 +1,14 @@
 import Banner from "@/components/LandingPages/Home/Banner";
+import Brands from "@/components/LandingPages/Home/Brands";
+import FeaturedProducts from "@/components/LandingPages/Home/Products/FeaturedProducts";
+import RecentlyViewedProducts from "@/components/LandingPages/Home/Products/RecentlyViewedProducts";
 import SmallFeature from "@/components/LandingPages/Home/SmallFeature";
 import Categories from "@/components/LandingPages/Home/Categories";
 import ProductTab from "@/components/LandingPages/Home/Products/ProductTab";
-import Brands from "@/components/LandingPages/Home/Brands";
-import FeatureProduct from "@/components/LandingPages/Home/Products/FeatureProduct";
 
 export const metadata = {
   title: "Home | Viscart",
-  description: "This is the homepage of Viscart website.",
+  description: "This is the homepage of Viscart",
 };
 
 const page = async () => {
@@ -17,8 +18,9 @@ const page = async () => {
       <SmallFeature />
       <Categories />
       <ProductTab />
-      <FeatureProduct />
+      <FeaturedProducts />
       <Brands />
+      <RecentlyViewedProducts />
     </div>
   );
 };

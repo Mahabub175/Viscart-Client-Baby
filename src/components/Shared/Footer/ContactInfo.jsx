@@ -1,7 +1,7 @@
 import { FaLocationDot, FaPhone, FaClock } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import Image from "next/image";
-import logo from "@/assets/images/logo-white.png";
+import logo from "@/assets/images/logo.png";
 
 const ContactInfo = ({ globalData }) => {
   return (
