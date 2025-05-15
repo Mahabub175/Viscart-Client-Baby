@@ -1,6 +1,5 @@
 import { Rate, Tooltip } from "antd";
 import Image from "next/image";
-import React, { useState } from "react";
 import QuickViewHover from "../../Products/QuickViewHover";
 import { useGetAllGlobalSettingQuery } from "@/redux/services/globalSetting/globalSettingApi";
 import { formatImagePath } from "@/utilities/lib/formatImagePath";
@@ -8,37 +7,17 @@ import LinkButton from "@/components/Shared/LinkButton";
 
 const ProductCard = ({ item }) => {
   const { data: globalData } = useGetAllGlobalSettingQuery();
-  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className="border hover:border-primary duration-300 rounded-xl shadow-xl relative group w-auto h-[320px] lg:w-[230px] lg:h-[400px] mx-auto bg-white"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="border hover:border-primary duration-300 rounded-xl shadow-xl relative group w-auto h-[320px] lg:w-[230px] lg:h-[400px] mx-auto bg-white">
       <div className="relative overflow-hidden rounded-t-xl">
-        {item?.video && isHovered ? (
-          <video
-            src={formatImagePath(item?.video)}
-            frameBorder="0"
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-            autoPlay
-            muted
-            controls={false}
-            className="w-full h-[160px] lg:h-[220px] rounded-t-xl object-cover"
-          >
-            Your browser does not support the video tag.
-          </video>
-        ) : (
-          <Image
-            src={formatImagePath(item?.mainImage)}
-            alt={item?.name}
-            width={230}
-            height={220}
-            className="rounded-t-xl w-[250px] h-[160px] lg:h-[220px] group-hover:scale-110 duration-500"
-          />
-        )}
+        <Image
+          src={formatImagePath(item?.mainImage)}
+          alt={item?.name}
+          width={230}
+          height={220}
+          className="rounded-t-xl w-[250px] h-[160px] lg:h-[220px] group-hover:scale-110 duration-500"
+        />
 
         <div className="hidden lg:block absolute inset-x-0 bottom-0 transform translate-y-full group-hover:translate-y-0 duration-500 z-10">
           <QuickViewHover item={item} />
