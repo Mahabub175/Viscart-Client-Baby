@@ -201,6 +201,16 @@ const GlobalSetting = () => {
             type={"number"}
           />
           <CustomInput
+            name={"deliveryApiKey"}
+            label={"Delivery API Key"}
+            type={"password"}
+          />
+          <CustomInput
+            name={"deliverySecretKey"}
+            label={"Delivery Secret Key"}
+            type={"password"}
+          />
+          <CustomInput
             name={"bkashUserName"}
             label={"Bkash User Name"}
             type={"password"}
