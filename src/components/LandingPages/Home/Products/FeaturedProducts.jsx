@@ -120,14 +120,14 @@ const FeatureProduct = () => {
                               </div>
 
                               <div className="flex items-center gap-4 justify-start">
-                                {item?.offerPrice && (
+                                {item?.offerPrice > 0 && (
                                   <p className="text-sm lg:text-base font-bold line-through text-red-500">
                                     {globalData?.results?.currency +
                                       " " +
                                       item?.sellingPrice}
                                   </p>
                                 )}
-                                {item?.offerPrice ? (
+                                {item?.offerPrice > 0 ? (
                                   <p className="text-primary lg:text-2xl font-bold">
                                     {globalData?.results?.currency +
                                       " " +

@@ -76,7 +76,7 @@ const LandingTopHeader = () => {
               <p className="text-lg font-medium">{product?.name}</p>
               <p>
                 Price: {globalData?.results?.currency}{" "}
-                {product?.offerPrice
+                {product?.offerPrice > 0
                   ? product?.offerPrice
                   : product?.sellingPrice}
               </p>

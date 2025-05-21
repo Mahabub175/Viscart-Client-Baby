@@ -53,12 +53,12 @@ const ProductCard = ({ item }) => {
           </div>
 
           <div className="flex items-center gap-2 lg:gap-4 justify-start absolute bottom-4">
-            {item?.offerPrice && (
+            {item?.offerPrice > 0 && (
               <p className="text-sm lg:text-base font-medium line-through text-red-500">
                 {globalData?.results?.currency + " " + item?.sellingPrice}
               </p>
             )}
-            {item?.offerPrice ? (
+            {item?.offerPrice > 0 ? (
               <p className="text-primary text-sm lg:text-xl font-medium">
                 {globalData?.results?.currency + " " + item?.offerPrice}
               </p>
