@@ -4,8 +4,12 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { RightOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setFilter } from "@/redux/services/device/deviceSlice";
 
 const CategoryNavigation = ({ onClose }) => {
+  const dispatch = useDispatch();
+
   const pathname = usePathname();
   const { data: categories } = useGetAllCategoriesQuery();
 
@@ -13,10 +17,18 @@ const CategoryNavigation = ({ onClose }) => {
     (cat) => cat?.level === "parentCategory"
   );
 
+  const itemClickHandler = (item) => {
+    if (item?.name) {
+      dispatch(setFilter(item?.name));
+    }
+  };
+
   const renderSubcategories = (subcategories) => {
     return subcategories?.map((subCat) => (
       <Menu.Item key={subCat._id}>
-        <Link href={`/products?filter=${subCat.name}`}>{subCat.name}</Link>
+        <Link href={`/products`}>
+          <p onClick={() => itemClickHandler(subCat)}>{subCat.name}</p>
+        </Link>
       </Menu.Item>
     ));
   };
@@ -29,8 +41,10 @@ const CategoryNavigation = ({ onClose }) => {
           key={category._id}
           title={
             <span className="flex justify-between items-center">
-              <Link href={`/products?filter=${category.name}`}>
-                {category.name}
+              <Link href={`/products`}>
+                <p onClick={() => itemClickHandler(category)}>
+                  {category.name}
+                </p>
               </Link>
               <RightOutlined />
             </span>
@@ -40,8 +54,8 @@ const CategoryNavigation = ({ onClose }) => {
         </Menu.SubMenu>
       ) : (
         <Menu.Item key={category._id}>
-          <Link href={`/products?filter=${category.name}`}>
-            {category.name}
+          <Link href={`/products`}>
+            <p onClick={() => itemClickHandler(category)}>{category.name}</p>
           </Link>
         </Menu.Item>
       );

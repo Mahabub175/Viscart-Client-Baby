@@ -1,23 +1,28 @@
+import free from "@/assets/images/free.png";
+import replacement from "@/assets/images/replacement.png";
+import customer from "@/assets/images/customer.png";
+import cash from "@/assets/images/cash.png";
+
 export const smallFeatureData = [
   {
     name: "Free Shipping",
     feature:
       "Free shipping for all orders over BDT. 5000 Contrary to popular believe",
-    image: "https://shokhbazar.com/assets/images/162196463701.png",
+    image: free,
   },
   {
     name: "Replacement Guarantee",
     feature: "We Provide Replacement Guarantee within 7 days",
-    image: "https://shokhbazar.com/assets/images/162196467602.png",
+    image: replacement,
   },
   {
     name: "Dedicated Customer Support",
     feature: "Friendly 9 AM-10 PM Daily customer support",
-    image: "https://shokhbazar.com/assets/images/162196471103.png",
+    image: customer,
   },
   {
     name: "Cash On delivery",
     feature: "We Delivery whole Bangladesh on Cash Delivery",
-    image: "https://shokhbazar.com/assets/images/162196474904.png",
+    image: cash,
   },
 ];
